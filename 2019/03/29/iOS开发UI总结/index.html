@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>iOS开发UI总结 | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="UI相关的几个要点 UIView &amp; CALayer 事件传递和视图响应链 图像显示原理 UI卡顿掉帧原理 滑动优化方案 离屏渲染  UIView &amp; CALayerUIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发UI总结">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="UI相关的几个要点 UIView &amp; CALayer 事件传递和视图响应链 图像显示原理 UI卡顿掉帧原理 滑动优化方案 离屏渲染  UIView &amp; CALayerUIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/02event.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/03action.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/04cpu.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/05gpu.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/06kadun.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/07display.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/08yibuhuizhi.png">
+<meta property="article:published_time" content="2019-03-29T02:42:19.000Z">
+<meta property="article:modified_time" content="2020-07-28T05:41:08.593Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="UI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/02event.png">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-iOS开发UI总结"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/">
+    	iOS开发UI总结
+    </a>
+  </h2>
+	<time>
+	  Mar 29, 2019
+	</time>
+	
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/iOS/">iOS</a>
+    </div>
+
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UI相关的几个要点"><span class="toc-number">1.</span> <span class="toc-text">UI相关的几个要点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UIView-amp-CALayer"><span class="toc-number">1.1.</span> <span class="toc-text">UIView &amp; CALayer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#图像显示原理"><span class="toc-number">1.2.</span> <span class="toc-text">图像显示原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI绘制原理"><span class="toc-number">1.3.</span> <span class="toc-text">UI绘制原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#离屏渲染"><span class="toc-number">1.4.</span> <span class="toc-text">离屏渲染</span></a></li></ol></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<h1 id="UI相关的几个要点"><a href="#UI相关的几个要点" class="headerlink" title="UI相关的几个要点"></a>UI相关的几个要点</h1><ul>
+<li>UIView &amp; CALayer</li>
+<li>事件传递和视图响应链</li>
+<li>图像显示原理</li>
+<li>UI卡顿掉帧原理</li>
+<li>滑动优化方案</li>
+<li>离屏渲染</li>
+</ul>
+<h2 id="UIView-amp-CALayer"><a href="#UIView-amp-CALayer" class="headerlink" title="UIView &amp; CALayer"></a>UIView &amp; CALayer</h2><p>UIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状层级结构，layer 内部有 SubLayers，View 内部有 SubViews。但是 Layer 比 View 多了个AnchorPoint。UIView可以通过CALayer可以实现 <strong>阴影，圆角，带颜色的边框、3D变换、非矩形规范、透明遮照、多级非线性动画</strong>等。</p>
+<p>他们的区别是：</p>
+<ul>
+<li>与UIView最大的不同就是CALyer不处理用户的交互,不清楚具体的响应链；</li>
+<li>二者并无继承关系，CALyer是UIView显示内容的内部实现；</li>
+<li>UIView是对CALayer的一个封装，并提供了一些显示控制和响应链的功能；</li>
+</ul>
+<p>这样的设计体现了单一职责原则：UIView为CALayer提供内容，以及负责处理触摸等事件，参与响应链；CALayer负责显示内容contents。</p>
+<p>##事件传递 &amp; 视图响应链</p>
+<p>两个UIView方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;空间是否响事件测试</span><br><span class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;</span><br><span class="line">&#x2F;&#x2F;判断点位位置是否在区域内</span><br><span class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
+
+<p>事件传递顺序</p>
+<p><img src="02event.png" alt="png"></p>
+<p>通过代码体现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 此方法就是寻找最为合适的响应的控件</span><br><span class="line">   override func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView? &#123;</span><br><span class="line">    </span><br><span class="line">       super.hitTest(point, with: event);</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 1 UIView不接收触摸事件的三种情况：       </span><br><span class="line">       if self.isUserInteractionEnabled &#x3D;&#x3D; false || self.alpha &lt;&#x3D; 0.1 || self.isHidden &#x3D;&#x3D; true &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F;  2 判断当前的点是否在此控件上面</span><br><span class="line">       if self.point(inside: point, with: event) &#x3D;&#x3D; false &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 3 以上条件都满足 去遍历自己的子空间</span><br><span class="line">       for view in self.subviews &#123;</span><br><span class="line">           </span><br><span class="line">           &#x2F;&#x2F; 转为目标控件的点</span><br><span class="line">           let current_point &#x3D; self.convert(point, to: view);</span><br><span class="line">           &#x2F;&#x2F; 让子视图再去遍历 如果有的话 进行返回操作 没有的话 不要紧 返回nil就好了</span><br><span class="line">           if view.hitTest(current_point, with: event) !&#x3D; nil &#123;</span><br><span class="line">               return view;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 4 如果以上都没有找到 那就返回自己</span><br><span class="line">       return self;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用逻辑<br><img src="03action.png" alt="png"></p>
+<h2 id="图像显示原理"><a href="#图像显示原理" class="headerlink" title="图像显示原理"></a>图像显示原理</h2><p>cpu和GPU关系<br><img src="04cpu.png" alt="png"></p>
+<p>1.CPU:输出位图<br>2.GPU :图层渲染，纹理合成<br>3.把结果放到帧缓冲区(frame buffer)中<br>4.再由视频控制器根据vsync信号在指定时间之前去提取帧缓冲区的屏幕显示内容<br>5.显示到屏幕上</p>
+<p>cpu和gpu的显示中的分工<br><img src="05gpu.png" alt="png"></p>
+<p>CPU工作<br>1.Layout: UI布局，文本计算<br>2.Display: 绘制<br>3.Prepare: 图片解码<br>4.Commit：提交位图</p>
+<p>GPU渲染管线(OpenGL)<br>顶点着色，图元装配，光栅化，片段着色，片段处理</p>
+<p>##UI卡顿掉帧的原因<br><img src="06kadun.png" alt="png"></p>
+<p>iOS设备的硬件时钟会发出Vsync（垂直同步信号），然后App的CPU会去计算屏幕要显示的内容，之后将计算好的内容提交到GPU去渲染。随后，GPU将渲染结果提交到帧缓冲区，等到下一个VSync到来时将缓冲区的帧显示到屏幕上。也就是说，一帧的显示是由CPU和GPU共同决定的。</p>
+<p>一般来说，页面滑动流畅是60fps，也就是1s有60帧更新，即每隔16.7ms就要产生一帧画面，而如果CPU和GPU加起来的处理时间超过了16.7ms，就会造成掉帧甚至卡顿。</p>
+<p>##滑动优化方案<br>CPU：把以下操作放在子线程中<br>1.对象创建、调整、销毁<br>2.预排版（布局计算、文本计算、缓存高度等等）<br>3.预渲染（文本等异步绘制，图片解码等）</p>
+<p>GPU:<br>纹理渲染，视图混合</p>
+<p>一般遇到性能问题时，考虑以下问题：<br>是否受到CPU或者GPU的限制？<br>是否有不必要的CPU渲染？<br>是否有太多的离屏渲染操作？<br>是否有太多的图层混合操作？<br>是否有奇怪的图片格式或者尺寸？<br>是否涉及到昂贵的view或者效果？<br>view的层次结构是否合理？  </p>
+<h2 id="UI绘制原理"><a href="#UI绘制原理" class="headerlink" title="UI绘制原理"></a>UI绘制原理</h2><p><img src="07display.png" alt="png"></p>
+<p>异步绘制：<br><strong>[self.layer.delegate displayLayer: ]</strong><br>代理负责生成对应的bitmap,<br>设置该bitmap作为该layer.contents属性的值</p>
+<p><img src="08yibuhuizhi.png" alt="png"></p>
+<h2 id="离屏渲染"><a href="#离屏渲染" class="headerlink" title="离屏渲染"></a>离屏渲染</h2><p>On-Screen Rendering:当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行<br>Off-Screen Rendering:离屏渲染，分为CPU离屏渲染和GPU离屏渲染两种形式。GPU离屏渲染指的是GPU在当前屏幕缓冲区外新开辟一个缓冲区进行渲染操作<br>应当尽量避免的则是GPU离屏渲染</p>
+<p>GPU离屏渲染何时会触发呢？<br>圆角（当和maskToBounds一起使用时）、图层蒙版、阴影，设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.shouldRasterize ＝ YES</span><br></pre></td></tr></table></figure>
+
+<p><em>为什么要避免GPU离屏渲染？</em></p>
+<p>GPU需要做额外的渲染操作。通常GPU在做渲染的时候是很快的，但是涉及到offscreen-render的时候情况就可能有些不同，因为需要额外开辟一个新的缓冲区进行渲染，然后绘制到当前屏幕的过程需要做onscreen跟offscreen上下文之间的切换，这个过程的消耗会比较昂贵，涉及到OpenGL的pipeline跟barrier，而且offscreen-render在每一帧都会涉及到，因此处理不当肯定会对性能产生一定的影响。另外由于离屏渲染会增加GPU的工作量，可能会导致CPU+GPU的处理时间超出16.7ms，导致掉帧卡顿。所以可以的话应尽量减少offscreen-render的图层</p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/bianchengme/tags/iOS/">iOS</a>
+      
+        <a href="/bianchengme/tags/UI/">UI</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/" rel="prev"  title="iOS开发中使用Block总结">
+						iOS开发中使用Block总结 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/" rel="next"  title="iOS开发中RunTime总结">
+						iOS开发中RunTime总结
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'iOS开发UI总结',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

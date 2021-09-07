@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>vue 学习计划 | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基础  按照官方例子，使用&lt;script&gt;标签将官方教程（guide）写一遍，最终做个一个页面出来。（2d）  根据官方的实例，自己写一个例子，比如编辑器。（1d）  阅读官方进阶教程前半部分到自定义指令为止，着重理解vue的响应式机制和组件声明周期。『渲染函数（Render Function)』如果理解吃力可以先跳过。（1d）  阅读教程里关于路由和状态管理的章节，然后根据需要学习v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue 学习计划">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2020/05/18/vue-%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="基础  按照官方例子，使用&lt;script&gt;标签将官方教程（guide）写一遍，最终做个一个页面出来。（2d）  根据官方的实例，自己写一个例子，比如编辑器。（1d）  阅读官方进阶教程前半部分到自定义指令为止，着重理解vue的响应式机制和组件声明周期。『渲染函数（Render Function)』如果理解吃力可以先跳过。（1d）  阅读教程里关于路由和状态管理的章节，然后根据需要学习v">
+<meta property="og:locale" content="cn">
+<meta property="article:published_time" content="2020-05-18T01:37:49.000Z">
+<meta property="article:modified_time" content="2020-07-28T05:41:08.628Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="学习计划">
+<meta name="twitter:card" content="summary">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-vue-学习计划"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2020/05/18/vue-%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/">
+    	vue 学习计划
+    </a>
+  </h2>
+	<time>
+	  May 18, 2020
+	</time>
+	
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/vue/">vue</a>
+    </div>
+
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基础"><span class="toc-number">1.</span> <span class="toc-text">基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扩展"><span class="toc-number">2.</span> <span class="toc-text">扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vue-进阶阶段"><span class="toc-number">3.</span> <span class="toc-text">Vue 进阶阶段</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><ul>
+<li><input disabled="" type="checkbox"> 按照官方例子，使用<code>&lt;script&gt;</code>标签将官方教程（guide）写一遍，最终做个一个页面出来。（2d）</li>
+<li><input disabled="" type="checkbox"> 根据官方的实例，自己写一个例子，比如编辑器。（1d）</li>
+<li><input disabled="" type="checkbox"> 阅读官方进阶教程前半部分到自定义指令为止，着重理解vue的响应式机制和组件声明周期。『渲染函数（Render Function)』如果理解吃力可以先跳过。（1d）</li>
+<li><input disabled="" type="checkbox"> 阅读教程里关于路由和状态管理的章节，然后根据需要学习vue-router和vuex。根据文档中的例子跟着即可。（1d）</li>
+</ul>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><ul>
+<li><input disabled="" type="checkbox"> <p>了解 JavaScript 背后的规范，ECMAScript 的历史和目前的规范制定方式。学习 ES2015/16 的新特性，理解 ES2015 modules，适当关注还未成为标准的提案，ES6以后是各个框架的标配，必须要学。（2d）</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>命令行。(0.5d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>nodejs基础。(0.5d)</p>
+<blockquote>
+<p>至少要了解 npm 的常用命令，npm scripts 如何使用，语义化版本号规则，CommonJS 模块规范（了解它和 ES2015 Modules 的异同），Node 包的解析规则，以及 Node 的常用 API。应当做到可以自己写一些基本的命令行程序。注意 Node (6+) 版本开始已经支持绝大部分 ES2015 的特性，可以借此巩固 ES2015。</p>
+</blockquote>
+</li>
+<li><input disabled="" type="checkbox"> <p>了解如何使用 / 配置 Babel 来将 ES2015 编译到 ES5 用于浏览器环境。这个简单，看着Babel官网文档即可轻松配置。(0.5d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>学习 Webpack。Webpack 是一个极其强大同时也复杂的工具，作为起步，理解它的『一切皆模块』的思想，并基本了解其常用配置选项和 loader 的概念/使用方法即可，比如如何搭配 Webpack 使用 Babel。(0.5d)</p>
+<blockquote>
+<p>学习 Webpack 的一个挑战在于其本身文档的混乱，建议多搜索搜索，应该还是有质量不错的第三方教程的。英文好的建议阅读 Webpack 2.0 的文档，比起 1.0 有极大的改善，但需要注意和 1.0 的不兼容之处。</p>
+</blockquote>
+<h2 id="Vue-进阶阶段"><a href="#Vue-进阶阶段" class="headerlink" title="Vue 进阶阶段"></a>Vue 进阶阶段</h2></li>
+<li><input disabled="" type="checkbox"> <p>在 node 和 webpack 基础上，可以通过vue-cli来搭建基于webpack，并且支持单文件组件的项目了。建议使用webpick-simple这个模板开始，并阅读官方教程进阶篇剩余的内容以及vue-router的文档，了解一些进阶配置。可以自己亲手从零开始搭一个项目加深理解。(1d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>根据 例子 尝试在 Webpack 模板基础上整合 vue-router 和 vuex。(1d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>深入理解 Virtual DOM 和『渲染函数 (Render Functions)』这一章节（可选择性使用 JSX)，理解模板和渲染函数之间的对应关系，了解其使用方法和适用场景。(1d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>可选）根据需求，了解服务端渲染的使用（需要配合 Node 服务器开发的知识）。介绍一下服务端渲染的概念。nuxt集合了 vue-router 和 vuex、webpack的搭建套餐，有SEO需要的可以着重了解下， 并不是必须要学，这只是一种场景方案。</p>
+<blockquote>
+<p>从头搭建一个服务端渲染的应用是相当复杂的。幸运的是，我们有一个优秀的社区项目 Nuxt.js 让这一切变得非常简单。Nuxt 是一个基于 Vue 生态的更高层的框架，为开发服务端渲染的 Vue 应用提供了极其便利的开发体验。更酷的是，你甚至可以用它来做为静态站生成器。推荐尝试。</p>
+</blockquote>
+</li>
+<li><input disabled="" type="checkbox"> <p>阅读开源的 Vue 应用、组件、插件源码，自己尝试编写开源的 Vue 组件、插件。(2d)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>vue各种属性和概念如何结合react 组件混合用，也有必要了解一下，它们有些方案是可以通用的，比如jsx语法、vue用redux等。(2d)</p>
+</li>
+</ul>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/bianchengme/tags/vue/">vue</a>
+      
+        <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/">学习计划</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2020/05/18/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev"  title="vue学习笔记">
+						vue学习笔记 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2020/05/13/UICollectionView/" rel="next"  title="UICollectionView">
+						UICollectionView
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'vue 学习计划',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

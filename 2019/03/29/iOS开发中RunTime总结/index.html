@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>iOS开发中RunTime总结 | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="#runtime相关  数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t 对象、类对象、元类对象 消息传递、消息转发  一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t  NSObje">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发中RunTime总结">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="#runtime相关  数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t 对象、类对象、元类对象 消息传递、消息转发  一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t  NSObje">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/object_struct.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/02isa.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/03class.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/04message.png">
+<meta property="article:published_time" content="2019-03-29T02:39:12.000Z">
+<meta property="article:modified_time" content="2020-07-28T05:41:08.602Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="RunTime">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bianchengme.gitee.io/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/object_struct.png">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-iOS开发中RunTime总结"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/">
+    	iOS开发中RunTime总结
+    </a>
+  </h2>
+	<time>
+	  Mar 29, 2019
+	</time>
+	
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/iOS/">iOS</a>
+    </div>
+
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、数据结构：NSObject、objc-object、objc-class、isa、class-data-bits-t、cache-t、method-t"><span class="toc-number">1.</span> <span class="toc-text">一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、对象、类对象、元类对象"><span class="toc-number">2.</span> <span class="toc-text">二、对象、类对象、元类对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、消息传递"><span class="toc-number">3.</span> <span class="toc-text">三、消息传递</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、消息转发"><span class="toc-number">4.</span> <span class="toc-text">四、消息转发</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>#runtime相关</p>
+<ul>
+<li>数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t</li>
+<li>对象、类对象、元类对象</li>
+<li>消息传递、消息转发</li>
+</ul>
+<h3 id="一、数据结构：NSObject、objc-object、objc-class、isa、class-data-bits-t、cache-t、method-t"><a href="#一、数据结构：NSObject、objc-object、objc-class、isa、class-data-bits-t、cache-t、method-t" class="headerlink" title="一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t"></a>一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t</h3><p><img src="object_struct.png" alt="img"></p>
+<ul>
+<li>NSObject<br>在OC中，基本上所有的类的基类，都是NSObject。因此要深入了解OC中的类的结构，就要从NSObject这个类说起。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@interface NSObject &lt;NSObject&gt; &#123;</span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NSObject仅有一个实例变量Class isa：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents an Objective-C class.</span><br><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Class实质上是指向objc_class的指针。而objc_class的定义：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct objc_class : objc_object &#123;</span><br><span class="line">    &#x2F;&#x2F; Class ISA;</span><br><span class="line">    Class superclass;</span><br><span class="line">    cache_t cache;             &#x2F;&#x2F; formerly cache pointer and vtable</span><br><span class="line">    class_data_bits_t bits;    &#x2F;&#x2F; class_rw_t * plus custom rr&#x2F;alloc flags</span><br><span class="line"></span><br><span class="line">    class_rw_t *data() &#123; </span><br><span class="line">        return bits.data();</span><br><span class="line">    &#125;</span><br><span class="line">    void setData(class_rw_t *newData) &#123;</span><br><span class="line">        bits.setData(newData);</span><br><span class="line">    &#125;</span><br><span class="line">    。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，objc_class继承自objc_object；在objc_class中，有三个数据成员：superclass 、cache、bits。</p>
+<ul>
+<li><p>Class superclass ：同样是Class类型，表明当前类的父类。</p>
+</li>
+<li><p>cache_t cache ：用于快速查找方法执行函数，可增量扩展的哈希表结构，是局部性原理的最佳运用。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">struct cache_t &#123;</span><br><span class="line">    struct bucket_t *_buckets;&#x2F;&#x2F;一个散列表，用来方法缓存，bucket_t类型，包含key以及方法实现IMP</span><br><span class="line">    mask_t _mask;&#x2F;&#x2F;分配用来缓存bucket的总数</span><br><span class="line">    mask_t _occupied;&#x2F;&#x2F;表明目前实际占用的缓存bucket的个数</span><br><span class="line">｝</span><br><span class="line">struct bucket_t &#123;</span><br><span class="line">    private:</span><br><span class="line">    cache_key_t _key;</span><br><span class="line">    IMP _imp;</span><br><span class="line"> ｝</span><br></pre></td></tr></table></figure>
+
+<p>runtime当要调用一个方法时，先不去Class的方法列表中查找，而是先去找cache_t cache 。当系统调用过一个方法后，会将其实现IMP和key存放到cache中，因为理论上一个方法调用过后，被再次调用的概率很大。</p>
+<ul>
+<li>class_data_bits_t bits：这是Class的核心，其本质是一个可以被Mask的指针类型。根据不同的Mask，可以取出不同的值。可以看做对class_rw_t的封装。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">struct class_data_bits_t &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Values are the FAST_ flags above.</span><br><span class="line">    uintptr_t bits;</span><br><span class="line"> </span><br><span class="line">    public:</span><br><span class="line">    class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br><span class="line">    void setData(class_rw_t *newData)</span><br><span class="line">    &#123;</span><br><span class="line">        assert(!data()  ||  (newData-&gt;flags &amp; (RW_REALIZING | RW_FUTURE)));</span><br><span class="line">        &#x2F;&#x2F; Set during realization or construction only. No locking needed.</span><br><span class="line">        &#x2F;&#x2F; Use a store-release fence because there may be concurrent</span><br><span class="line">        &#x2F;&#x2F; readers of data and data&#39;s contents.</span><br><span class="line">        uintptr_t newBits &#x3D; (bits &amp; ~FAST_DATA_MASK) | (uintptr_t)newData;</span><br><span class="line">        atomic_thread_fence(memory_order_release);</span><br><span class="line">        bits &#x3D; newBits;</span><br><span class="line">    &#125;</span><br><span class="line">    。。。</span><br></pre></td></tr></table></figure>
+
+<p>class_data_bits_t bits 仅含有一个成员uintptr_t bits， 可以理解为一个‘复合指针’。什么意思呢，就是bits不仅包含了指针，同时包含了Class的各种异或flag，来说明Class的属性。把这些信息复合在一起，仅用一个uint指针bits来表示。当需要取出这些信息时，需要用对应的以FAST_ 前缀开头的flag掩码对bits做按位与操作。</p>
+<p>例如，我们需要取出Classs的核心信息class_rw_t, 则需要调用方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>class_rw_t：Class的核心结构</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct class_rw_t &#123;</span><br><span class="line">     uint32_t flags;</span><br><span class="line">     uint32_t version;</span><br><span class="line"></span><br><span class="line">     const class_ro_t *ro;</span><br><span class="line"></span><br><span class="line">     method_array_t methods;</span><br><span class="line">     property_array_t properties;</span><br><span class="line">     protocol_array_t protocols;</span><br><span class="line"></span><br><span class="line">     Class firstSubclass;</span><br><span class="line">     Class nextSiblingClass;</span><br><span class="line"></span><br><span class="line">     char *demangledName;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+
+<p>Objc的类的属性、方法、以及遵循的协议都放在class_rw_t中，class_rw_t代表了类相关的读写信息，是对class_ro_t的封装，而class_ro_t代表了类的只读信息，存储了 编译器决定了的属性、方法和遵守协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">struct class_ro_t &#123;</span><br><span class="line">    uint32_t flags;</span><br><span class="line">    uint32_t instanceStart;</span><br><span class="line">    uint32_t instanceSize;</span><br><span class="line">    #ifdef __LP64__</span><br><span class="line">    uint32_t reserved;</span><br><span class="line">    #endif</span><br><span class="line"></span><br><span class="line">    const uint8_t * ivarLayout;</span><br><span class="line">    </span><br><span class="line">    const char * name;</span><br><span class="line">    method_list_t * baseMethodList;</span><br><span class="line">    protocol_list_t * baseProtocols;</span><br><span class="line">    const ivar_list_t * ivars;</span><br><span class="line"></span><br><span class="line">    const uint8_t * weakIvarLayout;</span><br><span class="line">    property_list_t *baseProperties;</span><br><span class="line"></span><br><span class="line">    method_list_t *baseMethods() const &#123;</span><br><span class="line">        return baseMethodList;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>objc_object（id）</li>
+</ul>
+<p>OC的底层实现是runtime，在runtime这一层，对象被定义为objc_object 结构体，类被定义为了objc_class 结构体。而objc_class 继承于objc_object， 因此，类可以看做是一类特殊的对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">private:</span><br><span class="line">    isa_t isa;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; ISA() assumes this is NOT a tagged pointer object</span><br><span class="line">    Class ISA();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; getIsa() allows this to be a tagged pointer object</span><br><span class="line">    Class getIsa();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 省略其余方法</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>objc_object的定义很简单，仅包含一个isa_t类型 isa,有关于isa操作相关，弱引用相关，关联对象相关，内存关联相关。</p>
+<ul>
+<li>isa指针，共用体isa_t</li>
+</ul>
+<p>isa关于对象，其指向类对象。<br>关于类对象，其指向元类对象。<br>实例-(isa)-&gt;class-(isa)-&gt;MetaClass    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">union isa_t </span><br><span class="line">&#123;</span><br><span class="line">    isa_t() &#123; &#125;</span><br><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span><br><span class="line"></span><br><span class="line">    Class cls;</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 省略其余</span><br><span class="line">    。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="02isa.png" alt="img"></p>
+<ul>
+<li>method_t</li>
+</ul>
+<p>函数四要素：名称、返回值、参数、函数体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct method_t &#123;</span><br><span class="line">  SEL name;           &#x2F;&#x2F;名称</span><br><span class="line">  const char *types;&#x2F;&#x2F;返回值和参数</span><br><span class="line">  IMP imp;              &#x2F;&#x2F;函数体</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、对象、类对象、元类对象"><a href="#二、对象、类对象、元类对象" class="headerlink" title="二、对象、类对象、元类对象"></a>二、对象、类对象、元类对象</h3><ul>
+<li>类对象存储实例方法列表等信息；</li>
+<li>元类对象存储类方法列表等信息；</li>
+</ul>
+<p><img src="03class.png" alt="img"></p>
+<p>superClass是一层层集成的，到最后NSObject的superClass是nil。而NSObject的isa指向根元类，这个根元类的isa指向他自己，而他的superClass是NSObject，也就是最后形成一个环。</p>
+<h3 id="三、消息传递"><a href="#三、消息传递" class="headerlink" title="三、消息传递"></a>三、消息传递</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void objc_msgSend(void &#x2F;* id self, SEL op, ... *&#x2F; )</span><br><span class="line"></span><br><span class="line">void objc_msgSendSuper(void &#x2F;* struct objc_super *super, SEL op, ... *&#x2F; )</span><br><span class="line"></span><br><span class="line">struct objc_super &#123;</span><br><span class="line">    &#x2F;&#x2F;&#x2F; Specifies an instance of a class.</span><br><span class="line">    __unsafe_unretained _Nonnull id receiver;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;&#x2F; Specifies the particular superclass of the instance to message. </span><br><span class="line">#if !defined(__cplusplus)  &amp;&amp;  !__OBJC2__</span><br><span class="line">    &#x2F;* For compatibility with old objc-runtime.h header *&#x2F;</span><br><span class="line">    __unsafe_unretained _Nonnull Class class;</span><br><span class="line">#else</span><br><span class="line">    __unsafe_unretained _Nonnull Class super_class;</span><br><span class="line">#endif</span><br><span class="line">    &#x2F;* super_class is the first class to search *&#x2F;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>消息传递的流程：缓存查找–&gt;当前类查找–&gt;父类逐级查找</p>
+<ul>
+<li><p>调用方法之前，先去查找缓存，看看缓存中是否有对应选择器的方法实现，如果有，就去调用函数，完成消息传递（缓存查找：给定值SEL,目标是查找对应bucket_t中的IMP，哈希查找）</p>
+</li>
+<li><p>如果缓存中没有，会根据当前实例的isa指针查找当前类对象的方法列表，看看是否有同样名称的方法 ，如果找到，就去调用函数，完成消息传递（当前类中查找：对于已排序好的方法列表，采用二分查找，对于没有排序好的列表，采用一般遍历）</p>
+</li>
+<li><p>如果当前类对象的方法列表没有，就会逐级父类方法列表中查找，如果找到，就去调用函数，完成消息传递（父类逐级查找：先判断父类是否为nil，为nil则结束，否则就继续进行缓存查找–&gt;当前类查找–&gt;父类逐级查找的流程）</p>
+</li>
+<li><p>如果一直查到根类依然没有查找到，则进入到消息转发流程中，完成消息传递</p>
+</li>
+</ul>
+<h3 id="四、消息转发"><a href="#四、消息转发" class="headerlink" title="四、消息转发"></a>四、消息转发</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel;&#x2F;&#x2F;为对象方法进行决议</span><br><span class="line">+ (BOOL)resolveClassMethod:(SEL)sel;&#x2F;&#x2F;为类方法进行决议</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector;&#x2F;&#x2F;方法转发目标</span><br><span class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;</span><br><span class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation;</span><br></pre></td></tr></table></figure>
+<p><img src="04message.png" alt="img"></p>
+<p>那么最后消息未能处理的时候，还会调用到</p>
+<ul>
+<li><p>(void)doesNotRecognizeSelector:(SEL)aSelector这个方法，我们也可以在这个方法中做处理，避免掉crash，但是只建议在线上环境的时候做处理，实际开发过程中还要把异常抛出来</p>
+</li>
+<li><p>方法交换(Method-Swizzling)</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  + (void)load</span><br><span class="line">&#123;</span><br><span class="line">    Method test &#x3D; class_getInstanceMethod(self, @selector(test));</span><br><span class="line"></span><br><span class="line">    Method otherTest &#x3D; class_getInstanceMethod(self, @selector(otherTest));</span><br><span class="line"></span><br><span class="line">    method_exchangeImplementations(test, otherTest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：替换系统的方法，比如viewDidLoad，viewWillAppear以及一些响应方法，来进行统计信息</p>
+<ul>
+<li>动态添加方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class_addMethod(self, sel, testImp, &quot;v@:&quot;);</span><br><span class="line"></span><br><span class="line">void testImp (void)</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;testImp&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@dynamic 动态方法解析</li>
+</ul>
+<p>动态运行时语言将函数决议推迟到运行时<br>编译时语言在编译期进行函数决议</p>
+<ul>
+<li>[obj foo]和objc_msgSend()函数之间有什么关系？</li>
+</ul>
+<p>objc_msgSend()是[obj foo]的具体实现。在runtime中，objc_msgSend()是一个c函数，[obj foo]会被翻译成这样的形式objc_msgSend(obj, foo)。</p>
+<ul>
+<li>runtime是如何通过selector找到对应的IMP地址的？</li>
+</ul>
+<p>缓存查找–&gt;当前类查找–&gt;父类逐级查找</p>
+<ul>
+<li>能否向编译后的类中增加实例变量？</li>
+</ul>
+<p>不能。 编译后，该类已经完成了实例变量的布局，不能再增加实例变量。<br>但可以向动态添加的类中增加实例变量。</p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/bianchengme/tags/iOS/">iOS</a>
+      
+        <a href="/bianchengme/tags/RunTime/">RunTime</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/" rel="prev"  title="iOS开发UI总结">
+						iOS开发UI总结 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/" rel="next"  title="iOS开发中内存管理总结">
+						iOS开发中内存管理总结
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'iOS开发中RunTime总结',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
