@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>centos7 安装mysql5.7 | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="创建用户和组  12groupadd mysql useradd -g mysql -s &#x2F;sbin&#x2F;nologin mysql    解压到指定目录并重命名 12#dev.mysql.com 下载 linux 通用二进制包tar xzvf XXX.tar.gz &#x2F;usr&#x2F;local&#x2F;mysql  配置环境变量 123echo &quot;exp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos7 安装mysql5.7">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2021/05/09/centos7-%E5%AE%89%E8%A3%85mysql5-7/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="创建用户和组  12groupadd mysql useradd -g mysql -s &#x2F;sbin&#x2F;nologin mysql    解压到指定目录并重命名 12#dev.mysql.com 下载 linux 通用二进制包tar xzvf XXX.tar.gz &#x2F;usr&#x2F;local&#x2F;mysql  配置环境变量 123echo &quot;exp">
+<meta property="og:locale" content="cn">
+<meta property="article:published_time" content="2021-05-09T12:12:54.000Z">
+<meta property="article:modified_time" content="2021-09-07T07:26:31.782Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-centos7-安装mysql5-7"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2021/05/09/centos7-%E5%AE%89%E8%A3%85mysql5-7/">
+    	centos7 安装mysql5.7
+    </a>
+  </h2>
+	<time>
+	  May 9, 2021
+	</time>
+	
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/mysql/">mysql</a>
+    </div>
+
+	</section>
+	
+		<section class="toc-wrapper"></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<ol>
+<li>创建用户和组</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd mysql </span><br><span class="line">useradd -g mysql -s &#x2F;sbin&#x2F;nologin mysql</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><p>解压到指定目录并重命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#dev.mysql.com 下载 linux 通用二进制包</span><br><span class="line">tar xzvf XXX.tar.gz &#x2F;usr&#x2F;local&#x2F;mysql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;export PATH&#x3D;$PATH:&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;bin&quot; &gt;&gt; &#x2F;etc&#x2F;profile</span><br><span class="line"></span><br><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure></li>
+<li><p>创建数据目录，并配置权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;data&#x2F;mysql&#x2F;&#123;data,binlogs,log,etc,run&#125;</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;data  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;binlogs  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;binlogs</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;log  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;etc  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;etc</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;run  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql   &#x2F;data&#x2F;mysql&#x2F;  # 设置文件夹为第一步创建的用户组、用户的权限</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql   &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;&#123;data,binlogs,log,etc,run&#125; # 设置文件夹为第一步创建的用户组、用户</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除系统自带的my.cnf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f &#x2F;etc&#x2F;my.cnf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在/usr/local/mysql/etc/下创建my.cnf文件，加入如下参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">port &#x3D; 3306</span><br><span class="line">socket &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">pid_file &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.pid</span><br><span class="line">datadir &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br><span class="line">socket &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock</span><br><span class="line">max_connections &#x3D; 2048</span><br><span class="line">open_files_limit &#x3D; 65535</span><br><span class="line">skip-name-resolve</span><br><span class="line">lower_case_table_names&#x3D;1</span><br><span class="line">character-set-server &#x3D; utf8mb4</span><br><span class="line">collation-server &#x3D; utf8mb4_unicode_ci</span><br><span class="line">init_connect&#x3D;&#39;SET NAMES utf8mb4&#39;</span><br><span class="line">innodb_buffer_pool_size &#x3D; 1024M</span><br><span class="line">innodb_log_file_size &#x3D; 2048M</span><br><span class="line">innodb_file_per_table &#x3D; 1</span><br><span class="line">innodb_flush_log_at_trx_commit &#x3D; 0</span><br><span class="line">key_buffer_size &#x3D; 64M</span><br><span class="line">log-error &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_error.log</span><br><span class="line">log-bin &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;binlogs&#x2F;mysql-bin</span><br><span class="line">slow_query_log &#x3D; 1</span><br><span class="line">slow_query_log_file &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_slow_query.log</span><br><span class="line">long_query_time &#x3D; 5   </span><br><span class="line">tmp_table_size &#x3D; 32M</span><br><span class="line">max_heap_table_size &#x3D; 32M</span><br><span class="line">query_cache_type &#x3D; 0</span><br><span class="line">query_cache_size &#x3D; 0</span><br><span class="line">server-id&#x3D;1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化mysql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>记住生成的root密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &#39;temporary password&#39; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_error.log</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="9">
+<li><p>生成ssl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_ssl_rsa_setup --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data&#x2F;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置系统服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system </span><br><span class="line">touch mysqld.service #并加入以下内容</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;MySQL Server</span><br><span class="line">Documentation&#x3D;man:mysqld(8)</span><br><span class="line">Documentation&#x3D;http:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;en&#x2F;using-systemd.html</span><br><span class="line">After&#x3D;network.target</span><br><span class="line">After&#x3D;syslog.target</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User&#x3D;mysql</span><br><span class="line">Group&#x3D;mysql</span><br><span class="line">Type&#x3D;forking</span><br><span class="line">PIDFile&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysqld.pid    </span><br><span class="line">\# Disable service start and stop timeout logic of systemd for mysqld service.</span><br><span class="line">TimeoutSec&#x3D;0</span><br><span class="line">\# Execute pre and post scripts as root</span><br><span class="line">PermissionsStartOnly&#x3D;true</span><br><span class="line">\# Needed to create system tables</span><br><span class="line">\#ExecStartPre&#x3D;&#x2F;usr&#x2F;bin&#x2F;mysqld_pre_systemd</span><br><span class="line">\# Start main service</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;bin&#x2F;mysqld --daemonize --pid-file&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysqld.pid $MYSQLD_OPTS</span><br><span class="line">\# Use this to switch malloc implementation</span><br><span class="line">EnvironmentFile&#x3D;-&#x2F;etc&#x2F;sysconfig&#x2F;mysql</span><br><span class="line">\# Sets open_files_limit</span><br><span class="line">LimitNOFILE &#x3D; 65535    </span><br><span class="line">Restart&#x3D;on-failure    </span><br><span class="line">RestartPreventExitStatus&#x3D;1    </span><br><span class="line">PrivateTmp&#x3D;false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动mysql服务以及开机自启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable mysqld</span><br><span class="line">systemctl start mysqld</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用步骤8中的root密码进行登录，第一次登陆需要设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter user &#39;root&#39;@&#39;localhost&#39; identified by &#39;root&#39; # 只能通过该方法修改；</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>过程中遇到错误</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 2002 (HY000): Can&#39;t connect to local MySQL server through socket &#39;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock&#39; (2)</span><br></pre></td></tr></table></figure>
+
+<p>分析：在/usr/local/mysql/run/mysql.sock 位置没有找到mysql.sock；通过命令 <code>find / -name mysqld.sock</code> , 发现mysql。sock 位置不对，不是my.cnf配置位置，shy?  </p>
+<p>一番尝试发现 my.cnf,可以发现问题源头,不光[client] 中配置socket地址，[mysqld]中也要配置socket地址（上文已经更正错误），还是没有理解配置。。。</p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/bianchengme/tags/mysql/">mysql</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/" rel="prev"  title="Nacos通过Docke部署">
+						Nacos通过Docke部署 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2021/03/12/openstack-horizon-%E5%BF%AB%E9%80%9F%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C/" rel="next"  title="openstack-horizon 快速本地运行">
+						openstack-horizon 快速本地运行
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'centos7 安装mysql5.7',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/java/"><div class='name'>java</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/mysql/"><div class='name'>mysql</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/java/" style="font-size: 16px; color: #555">java</a> <a href="/bianchengme/tags/mysql/" style="font-size: 14px; color: #808080">mysql</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

@@ -272,6 +272,92 @@
   <section class="meta">
     
     <h2 class="title">
+      <a href="/bianchengme/2021/05/09/centos7-%E5%AE%89%E8%A3%85mysql5-7/">
+        centos7 安装mysql5.7
+      </a>
+    </h2>
+    
+    <time>
+      May 9, 2021
+    </time>
+		
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/mysql/">mysql</a>
+    </div>
+
+  </section>
+  <section class="article typo">
+	  <ol>
+<li>创建用户和组</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd mysql </span><br><span class="line">useradd -g mysql -s &#x2F;sbin&#x2F;nologin mysql</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><p>解压到指定目录并重命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#dev.mysql.com 下载 linux 通用二进制包</span><br><span class="line">tar xzvf XXX.tar.gz &#x2F;usr&#x2F;local&#x2F;mysql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;export PATH&#x3D;$PATH:&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;bin&quot; &gt;&gt; &#x2F;etc&#x2F;profile</span><br><span class="line"></span><br><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure></li>
+<li><p>创建数据目录，并配置权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;data&#x2F;mysql&#x2F;&#123;data,binlogs,log,etc,run&#125;</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;data  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;binlogs  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;binlogs</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;log  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;etc  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;etc</span><br><span class="line"></span><br><span class="line">ln -s &#x2F;data&#x2F;mysql&#x2F;run  &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql   &#x2F;data&#x2F;mysql&#x2F;  # 设置文件夹为第一步创建的用户组、用户的权限</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql   &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;&#123;data,binlogs,log,etc,run&#125; # 设置文件夹为第一步创建的用户组、用户</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除系统自带的my.cnf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f &#x2F;etc&#x2F;my.cnf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在/usr/local/mysql/etc/下创建my.cnf文件，加入如下参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">port &#x3D; 3306</span><br><span class="line">socket &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">pid_file &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.pid</span><br><span class="line">datadir &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br><span class="line">socket &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock</span><br><span class="line">max_connections &#x3D; 2048</span><br><span class="line">open_files_limit &#x3D; 65535</span><br><span class="line">skip-name-resolve</span><br><span class="line">lower_case_table_names&#x3D;1</span><br><span class="line">character-set-server &#x3D; utf8mb4</span><br><span class="line">collation-server &#x3D; utf8mb4_unicode_ci</span><br><span class="line">init_connect&#x3D;&#39;SET NAMES utf8mb4&#39;</span><br><span class="line">innodb_buffer_pool_size &#x3D; 1024M</span><br><span class="line">innodb_log_file_size &#x3D; 2048M</span><br><span class="line">innodb_file_per_table &#x3D; 1</span><br><span class="line">innodb_flush_log_at_trx_commit &#x3D; 0</span><br><span class="line">key_buffer_size &#x3D; 64M</span><br><span class="line">log-error &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_error.log</span><br><span class="line">log-bin &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;binlogs&#x2F;mysql-bin</span><br><span class="line">slow_query_log &#x3D; 1</span><br><span class="line">slow_query_log_file &#x3D; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_slow_query.log</span><br><span class="line">long_query_time &#x3D; 5   </span><br><span class="line">tmp_table_size &#x3D; 32M</span><br><span class="line">max_heap_table_size &#x3D; 32M</span><br><span class="line">query_cache_type &#x3D; 0</span><br><span class="line">query_cache_size &#x3D; 0</span><br><span class="line">server-id&#x3D;1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化mysql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>记住生成的root密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &#39;temporary password&#39; &#x2F;usr&#x2F;local&#x2F;mysql&#x2F;log&#x2F;mysql_error.log</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="9">
+<li><p>生成ssl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_ssl_rsa_setup --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data&#x2F;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置系统服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system </span><br><span class="line">touch mysqld.service #并加入以下内容</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;MySQL Server</span><br><span class="line">Documentation&#x3D;man:mysqld(8)</span><br><span class="line">Documentation&#x3D;http:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;en&#x2F;using-systemd.html</span><br><span class="line">After&#x3D;network.target</span><br><span class="line">After&#x3D;syslog.target</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User&#x3D;mysql</span><br><span class="line">Group&#x3D;mysql</span><br><span class="line">Type&#x3D;forking</span><br><span class="line">PIDFile&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysqld.pid    </span><br><span class="line">\# Disable service start and stop timeout logic of systemd for mysqld service.</span><br><span class="line">TimeoutSec&#x3D;0</span><br><span class="line">\# Execute pre and post scripts as root</span><br><span class="line">PermissionsStartOnly&#x3D;true</span><br><span class="line">\# Needed to create system tables</span><br><span class="line">\#ExecStartPre&#x3D;&#x2F;usr&#x2F;bin&#x2F;mysqld_pre_systemd</span><br><span class="line">\# Start main service</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;bin&#x2F;mysqld --daemonize --pid-file&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysqld.pid $MYSQLD_OPTS</span><br><span class="line">\# Use this to switch malloc implementation</span><br><span class="line">EnvironmentFile&#x3D;-&#x2F;etc&#x2F;sysconfig&#x2F;mysql</span><br><span class="line">\# Sets open_files_limit</span><br><span class="line">LimitNOFILE &#x3D; 65535    </span><br><span class="line">Restart&#x3D;on-failure    </span><br><span class="line">RestartPreventExitStatus&#x3D;1    </span><br><span class="line">PrivateTmp&#x3D;false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动mysql服务以及开机自启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable mysqld</span><br><span class="line">systemctl start mysqld</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用步骤8中的root密码进行登录，第一次登陆需要设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter user &#39;root&#39;@&#39;localhost&#39; identified by &#39;root&#39; # 只能通过该方法修改；</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>过程中遇到错误</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 2002 (HY000): Can&#39;t connect to local MySQL server through socket &#39;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;run&#x2F;mysql.sock&#39; (2)</span><br></pre></td></tr></table></figure>
+
+<p>分析：在/usr/local/mysql/run/mysql.sock 位置没有找到mysql.sock；通过命令 <code>find / -name mysqld.sock</code> , 发现mysql。sock 位置不对，不是my.cnf配置位置，shy?  </p>
+<p>一番尝试发现 my.cnf,可以发现问题源头,不光[client] 中配置socket地址，[mysqld]中也要配置socket地址（上文已经更正错误），还是没有理解配置。。。</p>
+
+
+    
+    
+    
+	  <div class="full-width auto-padding tags">
+      
+        <a href="/bianchengme/tags/mysql/">mysql</a>
+      
+	  </div>
+    
+  </section>
+</article>
+    </div>
+  
+    <div class='post-wrapper'>
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
       <a href="/bianchengme/2021/03/12/openstack-horizon-%E5%BF%AB%E9%80%9F%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C/">
         openstack-horizon 快速本地运行
       </a>
@@ -321,128 +407,37 @@
   <section class="meta">
     
     <h2 class="title">
-      <a href="/bianchengme/2020/07/28/Linux-%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7grep/">
-        Linux 生产力工具grep
+      <a href="/bianchengme/2020/10/11/%E7%94%A8npm%E5%AE%89%E8%A3%85sass%E6%95%99%E7%A8%8B%E5%92%8C%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF/">
+        用npm安装sass教程和常见错误
       </a>
     </h2>
     
     <time>
-      Jul 28, 2020
+      Oct 11, 2020
     </time>
 		
   </section>
   <section class="article typo">
-	  
-
-    
-    
-    
-  </section>
-</article>
-    </div>
-  
-    <div class='post-wrapper'>
-      <article class="post reveal">
-  <section class="meta">
-    
-    <h2 class="title">
-      <a href="/bianchengme/2020/07/28/Linux-%E5%88%87%E6%8D%A2%E5%90%AF%E5%8A%A8%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%BA%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%95%8C%E9%9D%A2/">
-        Linux 切换启动图形界面为命令行界面
-      </a>
-    </h2>
-    
-    <time>
-      Jul 28, 2020
-    </time>
-		
-  </section>
-  <section class="article typo">
-	  
-
-    
-    
-    
-  </section>
-</article>
-    </div>
-  
-    <div class='post-wrapper'>
-      <article class="post reveal">
-  <section class="meta">
-    
-    <h2 class="title">
-      <a href="/bianchengme/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE-1/">
-        Linux 修改网络配置
-      </a>
-    </h2>
-    
-    <time>
-      Jul 28, 2020
-    </time>
-		
-  </section>
-  <section class="article typo">
-	  
-
-    
-    
-    
-  </section>
-</article>
-    </div>
-  
-    <div class='post-wrapper'>
-      <article class="post reveal">
-  <section class="meta">
-    
-    <h2 class="title">
-      <a href="/bianchengme/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
-        Linux 修改网络配置
-      </a>
-    </h2>
-    
-    <time>
-      Jul 28, 2020
-    </time>
-		
-  </section>
-  <section class="article typo">
-	  
-
-    
-    
-    
-  </section>
-</article>
-    </div>
-  
-    <div class='post-wrapper'>
-      <article class="post reveal">
-  <section class="meta">
-    
-    <h2 class="title">
-      <a href="/bianchengme/2020/07/26/JS%E4%B8%AD%E7%9A%84async-await%E7%9A%84%E7%94%A8%E6%B3%95%E5%92%8C%E7%90%86%E8%A7%A3/">
-        JS中的async和await的用法和理解
-      </a>
-    </h2>
-    
-    <time>
-      Jul 26, 2020
-    </time>
-		
-  </section>
-  <section class="article typo">
-	  <h2 id="首先理解async的基本含义"><a href="#首先理解async的基本含义" class="headerlink" title="首先理解async的基本含义"></a>首先理解async的基本含义</h2><p>async 是一个修饰符，async 定义的函数会默认的返回一个Promise对象resolve的值，因此对async函数可以直接进行then操作,返回的值即为then方法的传入函数</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 0. async基础用法测试</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fun0</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun0().then( <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(x) &#125;)  <span class="comment">//  输出结果 1， 1，</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">funa</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a'</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'a'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">funa().then( <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(x) &#125;)  <span class="comment">//  输出结果a， a，</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">funo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(&#123;&#125;)</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">funo().then( <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(x) &#125;)   <span class="comment">// 输出结果 &#123;&#125;  &#123;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">funp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Promise'</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        resolve(<span class="string">'Promise'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">funp().then( <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(x) &#125;)   <span class="comment">// 输出promise  promise</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="await-也是一个修饰符"><a href="#await-也是一个修饰符" class="headerlink" title="await 也是一个修饰符"></a>await 也是一个修饰符</h3><p>await 关键字 只能放在 async 函数内部， await关键字的作用 就是获取 Promise中返回的内容， 获取的是Promise函数中resolve或者reject的值</p>
-<blockquote>
-<p>如果await 后面并不是一个Promise的返回值，则会按照同步程序返回值处理</p>
+	  <blockquote>
+<p>用npm安装sass经常出错，原因是安装包比较大，并且源在国外，所以网络不好情况下容易安装失败；另外还依赖python环境，缺乏python环境也会安装失败。</p>
 </blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  await 关键字 只能放在 async 函数内部， await关键字的作用 就是获取 Promise中返回的内容， 获取的是Promise函数中resolve或者reject的值</span></span><br><span class="line"><span class="comment">// 如果await 后面并不是一个Promise的返回值，则会按照同步程序返回值处理,为undefined</span></span><br><span class="line"><span class="keyword">const</span> bbb = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="string">'string'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">funAsy</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">const</span> a = <span class="keyword">await</span> <span class="number">1</span></span><br><span class="line">   <span class="keyword">const</span> b = <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>)=&gt;</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">           resolve(<span class="string">'time'</span>)</span><br><span class="line">        &#125;, <span class="number">3000</span>)</span><br><span class="line">   &#125;)</span><br><span class="line">   <span class="keyword">const</span> c = <span class="keyword">await</span> bbb()</span><br><span class="line">   <span class="built_in">console</span>.log(a, b, c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">funAsy()  <span class="comment">//  运行结果是 3秒钟之后 ，输出 1， time , string,</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.如果不使用promise的方法的话</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log2</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">   setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(time)</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    &#125;, time)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fun1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> log2(<span class="number">5000</span>)</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> log2(<span class="number">10000</span>)</span><br><span class="line">    <span class="keyword">const</span> c = log2(<span class="number">2000</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun1()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上运行结果为： 立刻输出undefined   立刻输出1  2秒后输出2000  5秒后输出5000  10秒后输出10000</span></span><br></pre></td></tr></table></figure>
+<p>为保障安装成功，做一些配置即可安装成功：</p>
+<p>方法一：使用淘宝源, 这样使用 npm install 安装 node-sass、electron 和 phantomjs 时都能自动从淘宝源上下载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">npm config set sass_binary_site&#x3D;https:&#x2F;&#x2F;npm.taobao.org&#x2F;mirrors&#x2F;node-sass&#x2F;</span><br><span class="line">npm config set phantomjs_cdnurl&#x3D;https:&#x2F;&#x2F;npm.taobao.org&#x2F;mirrors&#x2F;phantomjs&#x2F;</span><br><span class="line">npm config set electron_mirror&#x3D;https:&#x2F;&#x2F;npm.taobao.org&#x2F;mirrors&#x2F;electron&#x2F;</span><br><span class="line">npm config set registry&#x3D;https:&#x2F;&#x2F;registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
 
-<h3 id="最后async-和-await的综合用法如下"><a href="#最后async-和-await的综合用法如下" class="headerlink" title="最后async 和 await的综合用法如下"></a>最后async 和 await的综合用法如下</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.定义一个或多个普通函数，函数必须返回Promise对象，如果返回其他类型的数据，将按照普通同步程序处理</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>)=&gt;</span> &#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(time)</span><br><span class="line">           resolve()</span><br><span class="line">        &#125;, time)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">await</span> log(<span class="number">5000</span>)</span><br><span class="line">    <span class="keyword">await</span> log(<span class="number">10000</span>)</span><br><span class="line">    log(<span class="number">1000</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. async / await的重要应用 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> asy = <span class="function"><span class="keyword">function</span>(<span class="params">x, time</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">            resolve(x)</span><br><span class="line">        &#125;, time)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> asy(<span class="number">3</span>, <span class="number">5000</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> asy(<span class="number">4</span>, <span class="number">10000</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(b)</span><br><span class="line">    <span class="keyword">const</span> c =  <span class="keyword">await</span> asy(<span class="number">5</span>, <span class="number">15000</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(a,b,c)</span><br><span class="line">    <span class="keyword">const</span> d = a + b +c  </span><br><span class="line">    <span class="built_in">console</span>.log(d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5秒后输出3  又10秒后输出4 又15秒后输出5  然后立刻输出3,4,5，然后输出12</span></span><br></pre></td></tr></table></figure>
+<p>方法二：安装cnpm &gt;&gt;&gt;  也是淘宝源的做法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cnpm</span><br><span class="line">cnpm install</span><br></pre></td></tr></table></figure>
 
+<p>方法三：使用VPN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm config set proxy (http:&#x2F;&#x2F;127.0.0.1:1080) #此处是VPN的代理地址</span><br><span class="line">npm i node-sass</span><br><span class="line"># 下载完成后删除 http 代理</span><br><span class="line">npm config delete proxy</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>在安装过程中注意查看全部报错信息，比如会提示找不到 Python、找不到某个版本等等错误。按照问题分析解决即可：</p>
+</blockquote>
+<h4 id="提示没有Python环境"><a href="#提示没有Python环境" class="headerlink" title="提示没有Python环境"></a>提示没有Python环境</h4><p>这个很好解决，安装Pyhon，并确保配置好环境变量即可。</p>
+<h4 id="提示找不到某个版本"><a href="#提示找不到某个版本" class="headerlink" title="提示找不到某个版本"></a>提示找不到某个版本</h4><p>安装的时候如果指定了某个版本，可能淘宝源上没有指定要的版本，访问<a href="https://npm.taobao.org/mirrors/node-sass/" target="_blank" rel="noopener">https://npm.taobao.org/mirrors/node-sass/</a> 看存在哪些版本切换为相近版本即可。</p>
 
 
     
@@ -457,64 +452,44 @@
   <section class="meta">
     
     <h2 class="title">
-      <a href="/bianchengme/2020/07/26/Vue-%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD/">
-        Vue 插槽和作用域插槽
+      <a href="/bianchengme/2020/10/11/%E9%A1%B9%E7%9B%AE%E5%9F%BA%E7%BA%BF%E7%9B%AE%E5%BD%95-%E6%96%B9%E4%BE%BF%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E4%BA%A4%E6%8E%A5/">
+        项目基线目录-方便项目管理与交接
       </a>
     </h2>
     
     <time>
-      Jul 26, 2020
+      Oct 11, 2020
     </time>
 		
   </section>
   <section class="article typo">
-	  <h2 id="首先插槽（slot）的理解"><a href="#首先插槽（slot）的理解" class="headerlink" title="首先插槽（slot）的理解"></a>首先插槽（slot）的理解</h2><ul>
-<li>插槽（Slot）是Vue提出来的一个概念，正如名字一样，插槽用于决定将所携带的内容，插入到指定的某个位置，从而使模板分块，具有模块化的特质和更大的重用性。</li>
-<li>插槽显不显示、怎样显示是由父组件来控制的，而插槽在哪里显示就由子组件来进行控制<h2 id="如何使用插槽"><a href="#如何使用插槽" class="headerlink" title="如何使用插槽"></a>如何使用插槽</h2><h3 id="默认插槽"><a href="#默认插槽" class="headerlink" title="默认插槽"></a>默认插槽</h3>父组件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是父组件</span><br><span class="line">    &lt;slotOne1&gt;</span><br><span class="line">      &lt;p style&#x3D;&quot;color:red&quot;&gt;我是父组件插槽内容&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;&#x2F;slotOne1&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
+	  <p><strong>基线 (Baseline)</strong> 说起 .  基线是软件文档或源码 ( 或其它产出物 ) 的一个稳定版本 , 它是进一步开发的基础 . 所以 , 当基线形成后 , 项目负责 SCM 的人需要通知相关人员基线已经形成 , 并且哪儿可以找到这基线了的版本 . 这个过程可被认为内部的发布 . 至于对外的正式发布 , 更是应当从基线了的版本中发布 .  </p>
+<p>​    基线是项目储存库中每个工件版本在特定时期的一个 “ 快照 ” 。它提供一个正式标准，随后的工作基于此标准，并且只有经过授权后才能变更这个标准。建立一个初始基线后，以后每次对其进行的变更都将记录为一个差值，直到建成下一个基线。</p>
+<p>​    参与项目的开发人员将基线所代表的各版本的目录和文件填入他们的工作区。随着工作的进展，基线将合并自从上次建立基线以来开发人员已经交付的工作。变更一旦并入基线，开发人员就采用新的基线，以与项目中的变更保持同步。调整基线将把集成工作区中的文件并入开发工作区。</p>
+<p>​    建立基线的三大原因是：<strong>重现性、可追踪性和报告。</strong></p>
+<p>​    重现性是指及时返回并重新生成软件系统给定发布版的能力，或者是在项目中的早些时候重新生成开发环境的能力。可追踪性建立项目工件之间的前后继承关系。其目的在于确保设计满足要求、代码实施设计以及用正确代码编译可执行文件。报告来源于一个基线内容同另一个基线内容的比较。基线比较有助于调试并生成发布说明。</p>
+<p>​    建立基线后，需要标注所有组成构件和基线，以便能够对其进行识别和重新建立。</p>
 <blockquote>
-<p>在父组件引用的子组件中写入想要显示的内容（可以使用标签，也可以不用，也可以是组件）</p>
+<p>建立基线有以下几个优点：</p>
 </blockquote>
-</li>
+<ul>
+<li>基线为开发工件提供了一个定点和快照。  </li>
+<li>新项目可以从基线提供的定点之中建立。作为一个单独分支，新项目将与随后对原始项目（在主要分支上）所进行的变更进行隔离。  </li>
+<li>各开发人员可以将建有基线的构件作为他在隔离的私有工作区中进行更新的基础。  </li>
+<li>当认为更新不稳定或不可信时，基线为团队提供一种取消变更的方法。  </li>
+<li>您可以利用基线重新建立基于某个特定发布版本的配置，这样也可以重现已报告的错误。  </li>
 </ul>
-<p>子组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;slotOne1&quot;&gt;</span><br><span class="line">    &lt;div&gt;我是slotOne1组件&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;slot&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>在子组件中写入slot，slot所在的位置就是父组件要显示的内容</p>
+<p>使用  </p>
 </blockquote>
-<h3 id="具名插槽"><a href="#具名插槽" class="headerlink" title="具名插槽"></a>具名插槽</h3><p>子组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;slottwo&quot;&gt;</span><br><span class="line">    &lt;div&gt;slottwo&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;slot name&#x3D;&quot;header&quot;&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;slot&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;slot name&#x3D;&quot;footer&quot;&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
+<p>​    定期建立基线以确保各开发人员的工作保持同步。但是，在项目过程中，应该在每次迭代结束点（次要里程碑），以及与生命周期各阶段结束点相关联的主要里程碑处定期建立基线：</p>
+<p>​    生命周期目标里程碑（先启阶段）<br>​    生命周期构架里程碑（精化阶段）<br>​    初始操作性能里程碑（构建阶段）<br>​    产品发布里程碑（产品化阶段）</p>
 <blockquote>
-<p>在子组件中定义了三个slot标签，其中有两个分别添加了name属性header和footer</p>
+<p>基线目录结构</p>
 </blockquote>
-<p>父组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是父组件</span><br><span class="line">    &lt;slot-two&gt;</span><br><span class="line">      &lt;p&gt;啦啦啦，啦啦啦，我是卖报的小行家&lt;&#x2F;p&gt;</span><br><span class="line">      &lt;template slot&#x3D;&quot;header&quot;&gt;</span><br><span class="line">          &lt;p&gt;我是name为header的slot&lt;&#x2F;p&gt;</span><br><span class="line">      &lt;&#x2F;template&gt;</span><br><span class="line">      &lt;p slot&#x3D;&quot;footer&quot;&gt;我是name为footer的slot&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;&#x2F;slot-two&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>在父组件中使用template并写入对应的slot值来指定该内容在子组件中现实的位置（当然也不用必须写到template），没有对应值的其他内容会被放到子组件中没有添加name属性的slot中</p>
-</blockquote>
-<h3 id="插槽的默认值"><a href="#插槽的默认值" class="headerlink" title="插槽的默认值"></a>插槽的默认值</h3><p>父组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是父组件</span><br><span class="line">    &lt;slot-two&gt;&lt;&#x2F;slot-two&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
-
-<p>子组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;slottwo&quot;&gt;</span><br><span class="line">    &lt;slot&gt;我不是卖报的小行家&lt;&#x2F;slot&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>可以在子组件的slot标签中写入内容，当父组件没有写入内容时会显示子组件的默认内容，当父组件写入内容时，会替换子组件的默认内容.</p>
-</blockquote>
-<h3 id="编译作用域"><a href="#编译作用域" class="headerlink" title="编译作用域"></a>编译作用域</h3><p>父组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是父组件</span><br><span class="line">    &lt;slot-two&gt;</span><br><span class="line">      &lt;p&gt;&#123;&#123;name&#125;&#125;&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;&#x2F;slot-two&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      name： &#39;Jack&#39;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
-<p>子组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;slottwo&quot;&gt;</span><br><span class="line">    &lt;slot&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="作用域插槽"><a href="#作用域插槽" class="headerlink" title="作用域插槽"></a>作用域插槽</h2><p>专业解释：父组件应用子组件可以给插槽填充内容，但一般只填充html标签，里边的数据信息要由插槽自己提供，这个过程称为作用域插槽。<br>个人理解：父组件在用子组件来填充插槽的时候需要用到子组件里面插槽的数据。子组件文件插槽上带的数据在父组件的子组件标签里 让一个标签 带有slot-scope=”xxx” 去接收 以便在下面进行调用。</p>
-<p>子组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是作用域插槽的子组件</span><br><span class="line">    &lt;slot :data&#x3D;&quot;user&quot;&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#39;slotthree&#39;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      user: [</span><br><span class="line">        &#123;name: &#39;Jack&#39;, sex: &#39;boy&#39;&#125;,</span><br><span class="line">        &#123;name: &#39;Jone&#39;, sex: &#39;girl&#39;&#125;,</span><br><span class="line">        &#123;name: &#39;Tom&#39;, sex: &#39;boy&#39;&#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>在子组件的slot标签上绑定需要的值</p>
-</blockquote>
-<p>父组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    我是作用域插槽</span><br><span class="line">    &lt;slot-three&gt;</span><br><span class="line">      &lt;template slot-scope&#x3D;&quot;user&quot;&gt;</span><br><span class="line">        &lt;div v-for&#x3D;&quot;(item, index) in user.data&quot; :key&#x3D;&quot;index&quot;&gt;</span><br><span class="line">        &#123;&#123;item&#125;&#125;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">      &lt;&#x2F;template&gt;</span><br><span class="line">    &lt;&#x2F;slot-three&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>在父组件上使用slot-scope属性，user.data就是子组件传过来的值</p>
-</blockquote>
+<p>​    <img src="img1.png" alt="项目目录结构"></p>
+<p>克隆地址 <a href="https://github.com/shanyutou/Project-Baseline-Catalogue.git" target="_blank" rel="noopener">https://github.com/shanyutou/Project-Baseline-Catalogue.git</a></p>
+<p>项目中同时不断积累各种文档模板与画图方法，目的在于提高程序员的文档能力。</p>
 
 
     
@@ -529,13 +504,324 @@
   <section class="meta">
     
     <h2 class="title">
-      <a href="/bianchengme/2020/05/19/CALayer/">
-        CALayer
+      <a href="/bianchengme/2020/09/09/Spring-boot-api-%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7-apiDoc-vs-swagger-and-JApiDocs/">
+        Spring boot api 生成工具 apiDoc vs swagger and JApiDocs
       </a>
     </h2>
     
     <time>
-      May 19, 2020
+      Sep 9, 2020
+    </time>
+		
+  </section>
+  <section class="article typo">
+	  <blockquote>
+<p>曾经看过这样一个笑话：程序员最讨厌写文档，比这个还讨厌的事情就是，别人居然不写文档。</p>
+</blockquote>
+<p>文档的确是个令猿头疼的东西哇，但是文档的重要性也是不言而喻。这里就给大家安利两款比较好用的接口文档生成工具：</p>
+<ul>
+<li>apidoc 比较好用的静态生成工具，生成静态api文档非常合适；</li>
+<li>swagger功能强大的动态api工具，带有调试功能，knife4j是对swaggerUI封装的优化，更适合国人风格；</li>
+<li>Japidocs 新开源的静态生成工具用的人虽然没有上面两个多，但是只需要java环境即可，也是不错的api生成工具，值得尝试。</li>
+</ul>
+<h3 id="1-apidoc"><a href="#1-apidoc" class="headerlink" title="1. apidoc"></a>1. apidoc</h3><h5 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h5><p>apidoc是一款可以由源代码中的注释直接自动生成api接口文档的工具，它几乎支持目前主流的所有风格的注释。</p>
+<h5 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h5><p>首先你的环境必须要安装了node.js.然后通过以下的命令安装apidoc：</p>
+<blockquote>
+<p>npm install apidoc -g</p>
+</blockquote>
+<p>在你的项目根目录下添加apidoc.json文件，这个文件主要包含一些项目的描述信息，例如标题、介绍、版本等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;example&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;0.1.0&quot;,</span><br><span class="line">  &quot;description&quot;: &quot;apiDoc basic example&quot;,</span><br><span class="line">  &quot;title&quot;: &quot;Custom apiDoc browser title&quot;,</span><br><span class="line">  &quot;url&quot; : &quot;https:&#x2F;&#x2F;api.github.com&#x2F;v1&quot;</span><br><span class="line">&#125;</span><br><span class="line">1234567</span><br></pre></td></tr></table></figure>
+
+<p>在你的代码注释里加入apidoc的注解，例如这样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span><br><span class="line">     * @apiGroup Product</span><br><span class="line">     * @api &#123;GET&#125; &#x2F;product&#x2F;&#123;id&#125;  查询一个产品</span><br><span class="line">     * @apiDescription 指定产品id , 删除产品的全部信息，包括关联的schema</span><br><span class="line">     * @apiParam &#123;String&#125; id 产品id(必填*)</span><br><span class="line">     * @apiSuccessExample SuccessExample</span><br><span class="line">     * HTTP&#x2F;1.1 200</span><br><span class="line">     * &#123;</span><br><span class="line">     * id: &#39;xxx&#39;,</span><br><span class="line">     * modelId: &#39;xxxxx&#39;,</span><br><span class="line">     * name: &#39;xxx&#39;,</span><br><span class="line">     * intro: &#39;xxxx&#39;</span><br><span class="line">     * &#125;</span><br><span class="line">     * @apiErrorExample ErrorExample</span><br><span class="line">     * HTTP&#x2F;1.1 600</span><br><span class="line">     * 具体的异常信息</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @GetMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public Product getOneProduct(@PathVariable String id)</span><br><span class="line">    &#123;</span><br><span class="line">        return productServ.findOne(id);</span><br><span class="line">    &#125;</span><br><span class="line">12345678910111213141516171819202122</span><br></pre></td></tr></table></figure>
+
+<p>常用的一些注解如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@api 定义API的请求方法、路径和名字</span><br><span class="line">@apiDescription 定义API的描述</span><br><span class="line">@apiGroup 定义API的分组</span><br><span class="line">@apiParam 定义API的参数</span><br><span class="line">@apiParamExample 参数请求的事例</span><br><span class="line">@apiVersion 版本</span><br><span class="line">@apiErrorExample API错误示例</span><br><span class="line">@apiSuccessExample API正常示例</span><br><span class="line">12345678</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以利用apidoc的命令来生成接口文档了：<br><img src="https://note.youdao.com/yws/api/personal/file/3E3A42C7488F4B28A55A571E547E667E?method=download&shareKey=f4cb66a4dda2c461904f3d17ac6d480f" alt="img"></p>
+<p>然后当前目录下会生成一个新的apidoc目录，就是新生成的接口文档文件。<br><img src="https://note.youdao.com/yws/api/personal/file/A32C6142B85F4DF5B6573298C86676F8?method=download&shareKey=0473103f88076c2f2e8890f7fca8a8f9" alt="img"></p>
+<p>打开 index.html 即可看到生成的接口文档：<br><img src="https://note.youdao.com/yws/api/personal/file/953F265590674B73989A418C301FFE67?method=download&shareKey=09939a1241d68066e42a2e3a3faec42b" alt="img"></p>
+<h3 id="2-swagger"><a href="#2-swagger" class="headerlink" title="2. swagger"></a>2. swagger</h3><p>在这里俺用 springBoot 整合swagger2 做了个Restful Api 的接口小demo</p>
+<p><a href="https://github.com/caigoumiao/springboot-swagger" target="_blank" rel="noopener">github 源码传送门☛☛☛</a></p>
+<p>首先项目中得添加swagger2的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;io.springfox&#x2F;springfox-swagger2 --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.springfox&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;springfox-swagger2&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;io.springfox&#x2F;springfox-swagger-ui --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.springfox&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;springfox-swagger-ui&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">123456789101112</span><br></pre></td></tr></table></figure>
+
+<p>创建swagger2 的配置类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableSwagger2</span><br><span class="line">public class SwaggerConfig</span><br><span class="line">&#123;</span><br><span class="line">    public Docket createApi()&#123;</span><br><span class="line">        return new Docket(DocumentationType.SWAGGER_2)</span><br><span class="line">                .apiInfo(apiInfo())</span><br><span class="line">                .select()</span><br><span class="line">                .apis(RequestHandlerSelectors.basePackage(&quot;com.miao.springbootswagger&quot;))</span><br><span class="line">                .paths(PathSelectors.any())</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 创建api的基本信息</span><br><span class="line">    private ApiInfo apiInfo()&#123;</span><br><span class="line">        return new ApiInfoBuilder()</span><br><span class="line">                .title(&quot;springBoot 整合 Swagger2 实例&quot;)</span><br><span class="line">                .description(&quot;更多技术内容分享见博客：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_24871519&quot;)</span><br><span class="line">                .termsOfServiceUrl(&quot;https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_24871519&quot;)</span><br><span class="line">                .version(&quot;1.0&quot;)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">1234567891011121314151617181920212223</span><br></pre></td></tr></table></figure>
+
+<p>为接口添加swagger的注解：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">@RequestMapping(&quot;&#x2F;user&quot;)</span><br><span class="line">public class UserController</span><br><span class="line">&#123;</span><br><span class="line">    private static Map&lt;String, User&gt; users&#x3D;new ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;添加用户&quot;, notes &#x3D; &quot;添加一条用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;user&quot;, value &#x3D; &quot;用户详细实体user&quot;, required &#x3D; true, dataType &#x3D; &quot;User&quot;)</span><br><span class="line">    @PostMapping(&quot;&#x2F;add&quot;)</span><br><span class="line">    public User add(User user)&#123;</span><br><span class="line">        String id&#x3D;UUID();</span><br><span class="line">        while(users.containsKey(id))&#123;</span><br><span class="line">            id&#x3D;UUID();</span><br><span class="line">        &#125;</span><br><span class="line">        user.setId(id);</span><br><span class="line">        users.put(id, user);</span><br><span class="line">        return user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;获取一个用户&quot;, notes &#x3D; &quot;根据用户id获取用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;id&quot;, value &#x3D; &quot;用户ID&quot;, required &#x3D; true, dataType &#x3D; &quot;String&quot;)</span><br><span class="line">    @GetMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public User getOne(@PathVariable String id)&#123;</span><br><span class="line">        if(!users.containsKey(id))&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return users.get(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;获取所有用户信息列表&quot;)</span><br><span class="line">    @GetMapping(&quot;&#x2F;&quot;)</span><br><span class="line">    public List&lt;User&gt; getUsers()&#123;</span><br><span class="line">        return new ArrayList&lt;&gt;(users.values());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;更新用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;user&quot;, value &#x3D; &quot;用户信息实体&quot;,required &#x3D; true, dataType &#x3D; &quot;User&quot;)</span><br><span class="line">    @PutMapping(&quot;&#x2F;&quot;)</span><br><span class="line">    public User updateOne(User u)&#123;</span><br><span class="line">        User tmp &#x3D; users.get(u.getId());</span><br><span class="line">        if(tmp &#x3D;&#x3D; null)&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        if(u.getName()!&#x3D;null)&#123;</span><br><span class="line">            tmp.setName(u.getName());</span><br><span class="line">        &#125;</span><br><span class="line">        if(u.getAge() !&#x3D; null)&#123;</span><br><span class="line">            tmp.setAge(u.getAge());</span><br><span class="line">        &#125;</span><br><span class="line">        return tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;删除用户&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;id&quot;, value &#x3D; &quot;用户ID&quot;, required &#x3D; true, dataType &#x3D; &quot;String&quot;)</span><br><span class="line">    @DeleteMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public void delete(@PathVariable String id)&#123;</span><br><span class="line">        if(users.containsKey(id))&#123;</span><br><span class="line">            users.remove(id);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private String UUID()&#123;</span><br><span class="line">        return UUID.randomUUID().toString().replace(&quot;-&quot;, &quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465</span><br></pre></td></tr></table></figure>
+
+<p>上述都完成后，启动springBoot 项目，访问 <a href="http://localhost/" target="_blank" rel="noopener">http://localhost</a>:/swagger-ui.html 即可访问接口文档页面，具体页面如下：<br><img src="https://note.youdao.com/yws/api/personal/file/8D095CF9E7CA47259ACB4DA34075E844?method=download&shareKey=9c3d003719cc502734c3739bbd6d5221" alt="img"></p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/1C94F35AE9A24495A8E2D1699C376FF2?method=download&shareKey=f5202a26d0dfa4e0e7e3a84d1804703c" alt="img"></p>
+<h3 id="3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具"><a href="#3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具" class="headerlink" title="3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具"></a>3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具</h3><p>JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具。</p>
+<p>编写和维护API文档这个事情，对于后端程序员来说，是一件恼人但又不得不做的事情，我们都不喜欢写文档，但除非项目前后端代码都是自己写的，否则API文档将是前后端协作中一个不可或缺的沟通界面。</p>
+<p>既然不可避免，那就想办法弄个轮子吧。人生苦短，必须偷懒。</p>
+<p>相比Swagger要写一堆注解，Spring RestDocs需要写测试用例，才能生成API文档。JApiDocs 具有无痛集成的特点，你只需花几分钟就能知道它怎么用了。</p>
+<p>快速开始</p>
+<p>要使得JApiDcos正确工作，你写的代码应该是像下面的样子的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">* 用户接口</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/api/user/"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"></span><br><span class="line">publicclassUserController&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    * 用户列表</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*<span class="doctag">@paramlistForm</span></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping</span>(path =<span class="string">"list"</span>, method = &#123;RequestMethod.GET,  RequestMethod.POST&#125;  )</span><br><span class="line"></span><br><span class="line">publicApiResult&gt; list(UserListForm listForm)&#123;</span><br><span class="line"></span><br><span class="line">returnnull;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    * 保存用户</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*<span class="doctag">@paramuserForm</span></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@PostMapping</span>(path =<span class="string">"save"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function">publicApiResult <span class="title">saveUser</span><span class="params">(@RequestBodyUserForm userForm)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">returnnull;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们给Controller类和方法加上必要的注释，给接口方法返回相关的对象类型。是的，这样JApiDocs就能解析到相关的接口信息了，就跟我们平时写的代码是差不多的，但要注意，你要通过@param来告诉JApiDocs接口的参数，但在IDE的帮助下，这个工作将是轻松愉悦的：</p>
+<p>然后你在任意一个main入口方法执行下面的代码就可以生成文档了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DocsConfigconfig&#x3D; new DocsConfig();</span><br><span class="line"></span><br><span class="line">config.setProjectPath(&quot;your springboot project path&quot;); &#x2F;&#x2F; 项目根目录</span><br><span class="line"></span><br><span class="line">config.setProjectName(&quot;ProjectName&quot;); &#x2F;&#x2F; 项目名称</span><br><span class="line"></span><br><span class="line">config.setApiVersion(&quot;V1.0&quot;);      &#x2F;&#x2F; 声明该API的版本</span><br><span class="line"></span><br><span class="line">config.setDocsPath(&quot;your api docs path&quot;); &#x2F;&#x2F; 生成API 文档所在目录</span><br><span class="line"></span><br><span class="line">config.setAutoGenerate(Boolean.TRUE);  &#x2F;&#x2F; 配置自动生成</span><br><span class="line"></span><br><span class="line">Docs.buildHtmlDocs(config); &#x2F;&#x2F; 执行生成文档</span><br></pre></td></tr></table></figure>
+
+<p>接下来你只管好好写代码，生成Api文档的工作就可以交给JApiDocs了，你不需要再为额外编写和维护文档而烦恼。</p>
+<p>功能特性</p>
+<p>1、代码即文档</p>
+<p>JApiDocs是通过直接解析SpringBoot的源码语法来工作的，所以只要Controller的语法符合一定的代码规范，有合理的注释，就可以直接导出文档。</p>
+<p>2、支持导出HTML</p>
+<p>便捷的导航和接口查看界面；可本地预览，或者部署到HTTP服务器。推荐部署到服务器，方便前后端展开协作。</p>
+<p>3、同步导出客户端Model代码</p>
+<p>支持导出Android端的 Java 和iOS端的 Object C Model代码，减少前端程序员的重复编码工作。</p>
+<p>4、更多特性</p>
+<p>支持接口搜索；支持不同版本和英文文档；自定义扩展等。</p>
+<p>简洁的文档</p>
+<p>再好用的东西，如果没有文档说明，别人也无从入手。为了让大家尽快上手，JApiDocs准备了一份极简的文档说明，确保你在几分钟就能用上JApiDocs。</p>
+<p>花5分钟不到就能认识一个提高工作效率的工具，让你把更多的时间花在更加有价值的事情上，你确认不看一下吗？</p>
+<p>“</p>
+<p>仓库地址：</p>
+<p><a href="https://github.com/YeDaxia/JApiDocs" target="_blank" rel="noopener">https://github.com/YeDaxia/JApiDocs</a></p>
+<p>中文文档：</p>
+<p><a href="https://japidocs.agilestudio.cn/#/zh-cn/" target="_blank" rel="noopener">https://japidocs.agilestudio.cn/#/zh-cn/</a></p>
+
+
+    
+    
+    
+  </section>
+</article>
+    </div>
+  
+    <div class='post-wrapper'>
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
+      <a href="/bianchengme/2020/08/09/Java-enum%E5%B8%B8%E8%A7%81%E7%9A%84%E7%94%A8%E6%B3%95/">
+        Java enum常见的用法
+      </a>
+    </h2>
+    
+    <time>
+      Aug 9, 2020
+    </time>
+		
+  </section>
+  <section class="article typo">
+	  <h3 id="一-常量定义"><a href="#一-常量定义" class="headerlink" title="一,常量定义"></a>一,常量定义</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> WeekDay &#123;</span><br><span class="line">    SUN, MON, TUE, WED, THT, FRI, SAT</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二-swich"><a href="#二-swich" class="headerlink" title="二,swich"></a>二,swich</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> WeekDay &#123;</span><br><span class="line">    SUN, MON, TUE, WED, THT, FRI, SAT</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectDay</span></span>&#123;</span><br><span class="line">    WeekDay weekday = WeekDay.SUN;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">select</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span>(weekday)&#123;</span><br><span class="line">            <span class="keyword">case</span> SUN:</span><br><span class="line">                weekday = WeekDay.SUN;</span><br><span class="line">                bread;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三-向枚举添加新方法"><a href="#三-向枚举添加新方法" class="headerlink" title="三,向枚举添加新方法"></a>三,向枚举添加新方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Color &#123;  </span><br><span class="line">    RED(<span class="string">"红色"</span>, <span class="number">1</span>), GREEN(<span class="string">"绿色"</span>, <span class="number">2</span>), BLANK(<span class="string">"白色"</span>, <span class="number">3</span>), YELLO(<span class="string">"黄色"</span>, <span class="number">4</span>);  </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成员变量  </span></span><br><span class="line">    <span class="keyword">private</span> String name;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> index;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造方法  </span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Color</span><span class="params">(String name, <span class="keyword">int</span> index)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.name = name;  </span><br><span class="line">        <span class="keyword">this</span>.index = index;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 普通方法  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getName</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">for</span> (Color c : Color.values()) &#123;  </span><br><span class="line">            <span class="keyword">if</span> (c.getIndex() == index) &#123;  </span><br><span class="line">                <span class="keyword">return</span> c.name;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">// get set 方法  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> name;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.name = name;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIndex</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> index;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIndex</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.index = index;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四-覆盖枚举方法"><a href="#四-覆盖枚举方法" class="headerlink" title="四,覆盖枚举方法"></a>四,覆盖枚举方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Color &#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    RED(<span class="string">"红色"</span>, <span class="number">1</span>), GREEN(<span class="string">"绿色"</span>, <span class="number">2</span>), BLANK(<span class="string">"白色"</span>, <span class="number">3</span>), YELLO(<span class="string">"黄色"</span>, <span class="number">4</span>); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成员变量</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name; <span class="keyword">private</span> <span class="keyword">int</span> index; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造方法 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Color</span><span class="params">(String name, <span class="keyword">int</span> index)</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.name = name; <span class="keyword">this</span>.index = index; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//覆盖方法 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.index+<span class="string">"_"</span>+<span class="keyword">this</span>.name; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五-实现接口"><a href="#五-实现接口" class="headerlink" title="五,实现接口"></a>五,实现接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Behaviour</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getInfo</span><span class="params">()</span></span>; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Color implements Behaviour&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    RED(<span class="string">"红色"</span>, <span class="number">1</span>), GREEN(<span class="string">"绿色"</span>, <span class="number">2</span>), BLANK(<span class="string">"白色"</span>, <span class="number">3</span>), YELLO(<span class="string">"黄色"</span>, <span class="number">4</span>); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成员变量 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> index; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造方法 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Color</span><span class="params">(String name, <span class="keyword">int</span> index)</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.name = name; <span class="keyword">this</span>.index = index; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//接口方法 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getInfo</span><span class="params">()</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//接口方法 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="keyword">this</span>.index+<span class="string">":"</span>+<span class="keyword">this</span>.name); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="六-接口组织枚举"><a href="#六-接口组织枚举" class="headerlink" title="六,接口组织枚举"></a>六,接口组织枚举</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Food</span> </span>&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> Coffee implements Food&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        BLACK_COFFEE,DECAF_COFFEE,LATTE,CAPPUCCINO </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> Dessert implements Food&#123; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        FRUIT, CAKE, GELATO </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="七-枚举集合"><a href="#七-枚举集合" class="headerlink" title="七,枚举集合"></a>七,枚举集合</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        EnumSet&lt;WeekDay&gt; week = EnumSet.noneOf(WeekDay<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        week.add(WeekDay.MON);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"EnumSet中的元素："</span> + week);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        week.remove(WeekDay.MON);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"EnumSet中的元素："</span> + week);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        week.addAll(EnumSet.complementOf(week));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"EnumSet中的元素："</span> + week);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        week.removeAll(EnumSet.range(WeekDay.FRI, WeekDay.SAT));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"EnumSet中的元素："</span> + week);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+    
+    
+    
+  </section>
+</article>
+    </div>
+  
+    <div class='post-wrapper'>
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
+      <a href="/bianchengme/2020/08/08/Autowired%E4%B8%8E-Resource%E7%9A%84%E5%8C%BA%E5%88%AB/">
+        @Autowired与@Resource的区别
+      </a>
+    </h2>
+    
+    <time>
+      Aug 8, 2020
+    </time>
+		
+  </section>
+  <section class="article typo">
+	  <p>参考博文：</p>
+<p><a href="http://www.cnblogs.com/happyyang/articles/3553687.html" target="_blank" rel="noopener">http://www.cnblogs.com/happyyang/articles/3553687.html</a></p>
+<p><a href="http://blog.csdn.net/revent/article/details/49203619" target="_blank" rel="noopener">http://blog.csdn.net/revent/article/details/49203619</a></p>
+<p><a href="http://blog.csdn.net/ad921012/article/details/49679745" target="_blank" rel="noopener">http://blog.csdn.net/ad921012/article/details/49679745</a></p>
+<p><a href="http://lib.csdn.net/base/javaee" target="_blank" rel="noopener">spring</a>不但支持自己定义的@Autowired注解，还支持几个由JSR-250规范定义的注解，它们分别是@Resource、@PostConstruct以及@PreDestroy。<br>　　@Resource的作用相当于@Autowired，只不过@Autowired按byType自动注入，而@Resource默认按 byName自动注入罢了。@Resource有两个属性是比较重要的，分是name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。所以如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不指定name也不指定type属性，这时将通过反射机制使用byName自动注入策略。<br>　　@Resource装配顺序<br>　　1. 如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常<br>　　2. 如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常<br>　　3. 如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常<br>　　4. 如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配；</p>
+<p>@Autowired 与@Resource的区别：</p>
+<p>1、 @Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写在setter方法上。</p>
+<p>2、 @Autowired默认按类型装配（这个注解是属业spring的），默认情况下必须要求依赖对象必须存在，如果要允许null值，可以设置它的required属性为false，如：@Autowired(required=false) ，如果我们想使用名称装配可以结合@Qualifier注解进行使用，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Autowired&#96;&#96;()&#96;&#96;@Qualifier&#96;&#96;(&#96;&#96;&quot;baseDao&quot;&#96;&#96;)&#96;&#96;private&#96;&#96;BaseDao baseDao;</span><br></pre></td></tr></table></figure>
+
+<p>3、@Resource（这个注解属于J2EE的），默认按照名称进行装配，名称可以通过name属性进行指定，如果没有指定name属性，当注解写在字段上时，默认取字段名进行安装名称查找，如果注解写在setter方法上默认取属性名进行装配。当找不到与名称匹配的bean时才按照类型进行装配。但是需要注意的是，如果name属性一旦指定，就只会按照名称进行装配。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Resource&#96;&#96;(name&#x3D;&#96;&#96;&quot;baseDao&quot;&#96;&#96;)&#96;&#96;private&#96;&#96;BaseDao baseDao;</span><br></pre></td></tr></table></figure>
+
+<p>推荐使用：@Resource注解在字段上，这样就不用写setter方法了，并且这个注解是属于J2EE的，减少了与spring的耦合。这样代码看起就比较优雅。</p>
+<p><a href="http://blog.csdn.net/clerk0324/article/details/25198457" target="_blank" rel="noopener">spring @Qualifier注解</a></p>
+<p>@Autowired是根据类型进行自动装配的。如果当Spring上下文中存在不止一个UserDao类型的bean时，就会抛出BeanCreationException异常;如果Spring上下文中不存在UserDao类型的bean，也会抛出BeanCreationException异常。我们可以使用@Qualifier配合@Autowired来解决这些问题。如下：</p>
+<p>①可能存在多个UserDao实例</p>
+<p>[java]<a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">view plain</a><a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">copy</a><a href="https://code.csdn.net/snippets/331452" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/CODE_ico.png" alt="在CODE上查看代码片"></a><a href="https://code.csdn.net/snippets/331452/fork" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/ico_fork.svg" alt="派生到我的代码片"></a></p>
+<ol>
+<li>@Autowired  </li>
+<li>@Qualifier(“userServiceImpl”)  </li>
+<li><strong>public IUserService userService;</strong>  </li>
+</ol>
+<p>或者</p>
+<p>[java]<a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">view plain</a><a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">copy</a><a href="https://code.csdn.net/snippets/331452" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/CODE_ico.png" alt="在CODE上查看代码片"></a><a href="https://code.csdn.net/snippets/331452/fork" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/ico_fork.svg" alt="派生到我的代码片"></a></p>
+<ol>
+<li>@Autowired  </li>
+<li><strong>public \</strong>void setUserDao(@Qualifier(“userDao”) UserDao userDao) {****  </li>
+<li><strong>this.userDao = userDao;</strong>  </li>
+<li>} </li>
+</ol>
+<p>这样Spring会找到id为userServiceImpl和userDao的bean进行装配。</p>
+<p>②可能不存在UserDao实例</p>
+<p>[java]<a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">view plain</a><a href="http://blog.csdn.net/clerk0324/article/details/25198457#" target="_blank" rel="noopener">copy</a><a href="https://code.csdn.net/snippets/331452" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/CODE_ico.png" alt="在CODE上查看代码片"></a><a href="https://code.csdn.net/snippets/331452/fork" target="_blank" rel="noopener"><img src="https://code.csdn.net/assets/ico_fork.svg" alt="派生到我的代码片"></a></p>
+<ol>
+<li>@Autowired(required = <strong>false)</strong>  </li>
+<li><strong>public IUserService userService</strong> </li>
+<li></li>
+</ol>
+<p>个人总结：</p>
+<p>@Autowired//默认按type注入<br>@Qualifier(“cusInfoService”)//一般作为@Autowired()的修饰用<br>@Resource(name=”cusInfoService”)//默认按name注入，可以通过name和type属性进行选择性注入</p>
+<p>一般@Autowired和@Qualifier一起用，@Resource单独用。</p>
+<p>当然没有冲突的话@Autowired也可以单独用</p>
+<p>———–常用注解——–</p>
+<p>–定义Bean的注解</p>
+<p>@Controller</p>
+<p>@Controller(“Bean的名称”)</p>
+<p>定义控制层Bean,如Action</p>
+<p>@Service      </p>
+<p>@Service(“Bean的名称”)</p>
+<p>定义业务层Bean</p>
+<p>@Repository  </p>
+<p>@Repository(“Bean的名称”)</p>
+<p>定义DAO层Bean</p>
+<p>@Component  </p>
+<p>定义Bean, 不好归类时使用.</p>
+<p>–自动装配Bean （选用一种注解就可以）</p>
+<p>@Autowired  (Srping提供的)</p>
+<p>默认按类型匹配,自动装配(Srping提供的)，可以写在成员属性上,或写在setter方法上</p>
+<p>@Autowired(required=true)  </p>
+<p>一定要找到匹配的Bean，否则抛异常。 默认值就是true </p>
+<p>@Autowired</p>
+<p>@Qualifier(“bean的名字”) </p>
+<p>按名称装配Bean,与@Autowired组合使用，解决按类型匹配找到多个Bean问题。</p>
+<p>@Resource  JSR-250提供的</p>
+<p>默认按名称装配,当找不到名称匹配的bean再按类型装配.</p>
+<p>可以写在成员属性上,或写在setter方法上</p>
+<p>可以通过@Resource(name=”beanName”) 指定被注入的bean的名称, 要是未指定name属性, 默认使用成员属性的变量名,一般不用写name属性.</p>
+<p>@Resource(name=”beanName”)指定了name属性,按名称注入但没找到bean, 就不会再按类型装配了.</p>
+<p>@Inject  是JSR-330提供的</p>
+<p>按类型装配，功能比@Autowired少，没有使用的必要。</p>
+<p>–定义Bean的作用域和生命过程</p>
+<p>@Scope(“prototype”)</p>
+<p>值有:singleton,prototype,session,request,session,globalSession</p>
+<p>@PostConstruct </p>
+<p>相当于init-method,使用在方法上，当Bean初始化时执行。</p>
+<p>@PreDestroy </p>
+<p>相当于destory-method，使用在方法上，当Bean销毁时执行。</p>
+<p>–声明式事务</p>
+<p>@Transactional  </p>
+<p>@Autowired @Resource @Qualifier的区别</p>
+<p>实用理解：@Autowired @Resource 二选其一，看中哪个就用哪个。</p>
+<p>简单理解：</p>
+<p>@Autowired 根据类型注入， </p>
+<p>@Resource 默认根据名字注入，其次按照类型搜索</p>
+<p>@Autowired @Qualifie(“userService”) 两个结合起来可以根据名字和类型注入</p>
+<p>复杂理解：</p>
+<p>比如你有这么一个Bean</p>
+<p>@Service(“UserService”)</p>
+<p>public Class UserServiceImpl implements UserService｛｝;</p>
+<p>现在你想在UserController 里面使用这个UserServiceImpl </p>
+<p>public Class UserController ｛</p>
+<p>@AutoWire  //当使用这个注入的时候上面的 UserServiceImpl 只需要这样写 @Service，这样就会自动找到UserService这个类型以及他的子类型。UserServiceImpl 实现了UserService，所以能够找到它。不过这样有一个缺点，就是当UserService实现类有两个以上的时候，这个时候会找哪一个呢，这就造成了冲突，所以要用@AutoWire注入的时候要确保UserService只有一个实现类。</p>
+<p>@Resource 默认情况下是按照名称进行匹配，如果没有找到相同名称的Bean，则会按照类型进行匹配，有人可能会想了，这下好了，用这个是万能的了，不用管名字了，也不用管类型了，但这里还是有缺点。首先，根据这个注解的匹配效果可以看出，它进行了两次匹配，也就是说，如果你在UserService这个类上面这样写注解，@Service,它会怎么找呢，首先是找相同名字的，如果没有找到，再找相同类型的，而这里的@Service没有写名字，这个时候就进行了两次搜索，显然，速度就下降了许多。也许你还会问，这里的@Service本来就没有名字，肯定是直接进行类型搜索啊。其实不是这样的，UserServiceImpl 上面如果有@Service默认的名字 是这个userServiceImpl，注意看，就是把类名前面的大写变成小写，就是默认的Bean的名字了。 @Resource根据名字搜索是这样写@Resource(“userService”)，如果你写了这个名字叫userService，那么UserServiceImpl上面必须也是这个名字，不然还是会报错。</p>
+<p>@Autowired @Qualifie(“userService”) 是直接按照名字进行搜索，也就是说，对于UserServiceImpl 上面@Service注解必须写名字，不写就会报错，而且名字必须是@Autowired @Qualifie(“userService”) 保持一致。如果@Service上面写了名字，而@Autowired @Qualifie() ，一样会报错。</p>
+<p>private UserService userService;</p>
+<p>｝</p>
+<p>说了这么多，可能你有些说晕了，那么怎么用这三个呢，要实际的工作是根据实际情况来使用的，通常使用AutoWire和@Resource多一些，bean的名字不用写，而UserServiceImpl上面能会这样写 @Service(“userService”)。这里的实际工作情况，到底是什么情况呢？说白了就是整个项目设计时候考虑的情况，如果你的<a href="http://lib.csdn.net/base/architecture" target="_blank" rel="noopener">架构</a>设计师考虑的比较精细，要求比较严格，要求项目上线后的访问速度比较好，通常是考虑速度了。这个时候@AutoWire没有@Resource好用，因为@Resource可以根据名字来搜索，是这样写的@Resource(“userService”)。这个@Autowired @Qualifie(“userService”) 也可以用名字啊，为什么不用呢，原因很简单，这个有点长，不喜欢，增加工作量。因为根据名字搜索是最快的，就好像查<a href="http://lib.csdn.net/base/mysql" target="_blank" rel="noopener">数据库</a>一样，根据Id查找最快。因为这里的名字与数据库里面的ID是一样的作用。这个时候，就要求你多写几个名字，工作量自然就增加了。而如果你不用注解，用xml文件的时候，对于注入Bean的时候要求写一个Id，xml文件时候的id就相当于这里的名字。</p>
+<p>说了那么多没用，你能做的就是简单直接，什么最方便就用什么，</p>
+<p>你就直接用@Resource得了，如果你喜欢用@AutoWire也行，不用写名字。</p>
+<p>通常情况一个Bean的注解写错了，会报下面这些错误，最为常见，</p>
+<p>No bean named ‘user’ is defined，这个表示没有找到被命名为user的Bean，通俗的说，就是名字为user的类型，以及它的子类型，出现这个错误的原因就是注入时候的类型名字为user，而搜索的时候找不到，也就是说可能那个搜索的类型，并没有命令为user，解决办法就是找到这个类型，去命令为user，</p>
+<p>下面这个错误也常见，</p>
+<p>No qualifying bean of type [com.service.UserService] found for dependency:</p>
+<p>这个错误的原因就是类型上面没有加@Service这个注入，不仅仅是@Service，如果是其他层也会出现这个错误，这里我是以Service为例子说明，如果是DAO层就是没有加@Repository，Controller层，则是没有加@Controller。</p>
+<p>还有，如果你还是想再简单点，无论是DAO,Controller，Service三个层，都可以用这个注解，@Component，这个注解通用所有的Bean，这个时候你可能会说了，有通常的为什么用的人少呢，那是因为MVC这个分层的设计原则，用@Repository,@Service，@Controller，这个可以区别MVC原则中的DAO,Service，Controller。便于识别。</p>
+<p>博客2：</p>
+<p><a href="http://www.iteye.com/blogs/tag/spring" target="_blank" rel="noopener">spring</a><a href="http://www.iteye.com/blogs/tag/autowired" target="_blank" rel="noopener">autowired</a><a href="http://www.iteye.com/blogs/tag/qualifier" target="_blank" rel="noopener">qualifier</a><a href="http://www.iteye.com/blogs/tag/bytype" target="_blank" rel="noopener">bytype</a><a href="http://www.iteye.com/blogs/tag/byname" target="_blank" rel="noopener">byname</a> </p>
+<p>　在使用Spring框架中@Autowired标签时默认情况下使用</p>
+<p>Java代码 </p>
+<ol>
+<li>@Autowired </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br></pre></td></tr></table></figure>
+
+<p>注释进行自动注入时，Spring 容器中匹配的候选 Bean 数目必须有且仅有一个。当找不到一个匹配的 Bean 时，Spring 容器将抛出 BeanCreationException 异常，并指出必须至少拥有一个匹配的 Bean。</p>
+<p>@Autowired 默认是按照byType进行注入的，如果发现找到多个bean，则，又按照byName方式比对，如果还有多个，则报出异常。</p>
+<p>例子：</p>
+<p>@Autowired<br>private ExamUserMapper examUserMapper; - ExamUserMapper是一个接口</p>
+<p>\1. spring先找类型为ExamUserMapper的bean</p>
+<p>\2. 如果存在且唯一，则OK；</p>
+<p>\3. 如果不唯一，在结果集里，寻找name为examUserMapper的bean。因为bean的name有唯一性，所以，到这里应该能确定是否存在满足要求的bean了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Autowired也可以手动指定按照byName方式注入，使用@Qualifier标签，例如：</span><br><span class="line">@Autowired&#96; &#96;() &#96;&#96;@Qualifier&#96; &#96;(&#96; &#96;&quot;baseDao&quot;&#96; &#96;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>　　Spring 允许我们通过</p>
+<p>Java代码 </p>
+<ol>
+<li>@Qualifier </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Qualifier</span></span><br></pre></td></tr></table></figure>
+
+<p>注释指定注入 Bean 的名称，这样歧义就消除了，可以通过下面的方法解决异常。 </p>
+<p>Java代码 </p>
+<ol>
+<li>@Qualifier(“XXX”) </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Qualifier</span>(<span class="string">"XXX"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>中的 XX是 Bean 的名称，所以 @Autowired 和 @Qualifier 结合使用时，自动注入的策略就从 byType 转变成 byName 了。 </p>
+<p>　　@Autowired 可以对成员变量、方法以及构造函数进行注释，而 @Qualifier 的标注对象是成员变量、方法入参、构造函数入参。 </p>
+<p>  Spring不但支持自己定义的@Autowired注解，还支持几个由JSR-250规范定义的注解，它们分别是@Resource、@PostConstruct以及@PreDestroy。 </p>
+<p>Java代码 </p>
+<ol>
+<li>@Resource </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br></pre></td></tr></table></figure>
+
+<p>的作用相当于@Autowired，只不过@Autowired按byType自动注入，而@Resource默认按 byName自动注入罢了。@Resource有两个属性是比较重要的，分是name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。所以如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不指定name也不指定type属性，这时将通过反射机制使用byName自动注入策略。 </p>
+<p>　　@Resource装配顺序<br>　　1. 如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常<br>　　2. 如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常<br>　　3. 如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常<br>　　4. 如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配</p>
+
+
+    
+    
+    
+  </section>
+</article>
+    </div>
+  
+    <div class='post-wrapper'>
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
+      <a href="/bianchengme/2020/08/07/SOAP-%E5%8D%8F%E8%AE%AE%E8%AF%B7%E6%B1%82%E5%92%8C%E8%B0%83%E8%AF%95/">
+        SOAP 协议请求和调试
+      </a>
+    </h2>
+    
+    <time>
+      Aug 7, 2020
     </time>
 		
   </section>
@@ -627,6 +913,10 @@
     
         <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
     
+        <li><a class="flat-box" href="/bianchengme/categories/java/"><div class='name'>java</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/mysql/"><div class='name'>mysql</div><div class='badget'>1</div></a></li>
+    
         <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
     
     </ul>
@@ -638,7 +928,7 @@
 <div class="m_widget tagcloud">
     <div class="header">Tags</div>
     <div class='content'>
-        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/java/" style="font-size: 16px; color: #555">java</a> <a href="/bianchengme/tags/mysql/" style="font-size: 14px; color: #808080">mysql</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
     </div>
 </div>
 

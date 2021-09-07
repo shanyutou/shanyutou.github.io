@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>Maven项目资源文件路径配置理解 | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在Spring Boot中使用Mybatis Plus时遇到一个问题，在Mapper.java同目录下创建Mapper.xml文件，检查xml文件编写没有问题，application.yml文件中也配置了mapper-locations: classpath:mapper&#x2F;*.xml,但是就是提示找不到xml文件。经过一番搜索，找到解决办法：在pom.xml 中 build 下添加： 123456">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maven项目资源文件路径配置理解">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="在Spring Boot中使用Mybatis Plus时遇到一个问题，在Mapper.java同目录下创建Mapper.xml文件，检查xml文件编写没有问题，application.yml文件中也配置了mapper-locations: classpath:mapper&#x2F;*.xml,但是就是提示找不到xml文件。经过一番搜索，找到解决办法：在pom.xml 中 build 下添加： 123456">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/6.png">
+<meta property="article:published_time" content="2018-10-31T12:12:30.000Z">
+<meta property="article:modified_time" content="2021-09-07T07:26:31.783Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bianchengme.gitee.io/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/1.png">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-mybatis-plus-xml-文件路径配置"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/">
+    	Maven项目资源文件路径配置理解
+    </a>
+  </h2>
+	<time>
+	  Oct 31, 2018
+	</time>
+	
+    
+    <div class='cats'>
+        <a href="/bianchengme/categories/java/">java</a>
+    </div>
+
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、介绍"><span class="toc-number">1.</span> <span class="toc-text">1、介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、Maven项目的标准目录结构"><span class="toc-number">2.</span> <span class="toc-text">2、Maven项目的标准目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、打包时资源文件的配置"><span class="toc-number">3.</span> <span class="toc-text">3、打包时资源文件的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、打包src-main-java目录下的xml"><span class="toc-number">3.1.</span> <span class="toc-text">3.1、打包src&#x2F;main&#x2F;java目录下的xml</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、src-main-resources目录下的xml等资源文件不被打包"><span class="toc-number">3.2.</span> <span class="toc-text">3.2、src&#x2F;main&#x2F;resources目录下的xml等资源文件不被打包</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、补充Mybatis、MyBatisPlus-xml文件配置："><span class="toc-number">4.</span> <span class="toc-text">4、补充Mybatis、MyBatisPlus xml文件配置：</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>在Spring Boot中使用Mybatis Plus时遇到一个问题，在Mapper.java同目录下创建Mapper.xml文件，检查xml文件编写没有问题，application.yml文件中也配置了<code>mapper-locations: classpath:mapper/*.xml</code>,但是就是提示找不到xml文件。经过一番搜索，找到解决办法：在pom.xml 中 build 下添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>重新运行就发现可以正常运行项目，学习不能止于知其然，要做到知其所以然，为什么添加该配置项目就能找到xml文件。初步分析，build的时候java目录下的xml文件没有被打包，找到一段关于maven打包resource配置介绍：</p>
+<h3 id="1、介绍"><a href="#1、介绍" class="headerlink" title="1、介绍"></a>1、介绍</h3><p>构建Maven项目的时候，如果没有进行特殊的配置，Maven会按照标准的目录结构查找和处理各种类型文件。</p>
+<p><code>src/main/java和src/test/java</code>这两个目录中的所有*.java文件会分别在comile和test-comiple阶段被编译，编译结果分别放到了target/classes和targe/test-classes目录中，但是这两个目录中的其他文件都会被忽略掉。</p>
+<p><code>src/main/resouces和src/test/resources</code> 这两个目录中的文件也会分别被复制到target/classes和target/test-classes目录中。</p>
+<p>然后打包插件默认会把<code>target/classes</code>这个目录中的所有内容打入到jar包或者war包中。这个初步解释了上面的问题所在。</p>
+<h3 id="2、Maven项目的标准目录结构"><a href="#2、Maven项目的标准目录结构" class="headerlink" title="2、Maven项目的标准目录结构"></a>2、Maven项目的标准目录结构</h3><ul>
+<li>src<pre><code>- main
+        - java         源文件 
+        - resources    资源文件
+        - filters   资源过滤文件
+        - config   配置文件
+        - scripts   脚本文件
+        - webapp   web应用文件
+- test
+        - java    测试源文件
+        - resources    测试资源文件
+        - filters    测试资源过滤文件
+- it       集成测试
+- assembly    assembly descriptors
+- site    Site</code></pre></li>
+<li>target<pre><code>- generated-sources
+- classes
+- generated-test-sources
+- test-classes
+- xxx.jar</code></pre></li>
+<li>pom.xml</li>
+<li>LICENSE.txt</li>
+<li>NOTICE.txt</li>
+<li>README.txt</li>
+</ul>
+<h3 id="3、打包时资源文件的配置"><a href="#3、打包时资源文件的配置" class="headerlink" title="3、打包时资源文件的配置"></a>3、打包时资源文件的配置</h3><h4 id="3-1、打包src-main-java目录下的xml"><a href="#3-1、打包src-main-java目录下的xml" class="headerlink" title="3.1、打包src/main/java目录下的xml"></a>3.1、打包src/main/java目录下的xml</h4><p>一般情况下，我们用到的资源文件(各种xml，properites，xsd文件等)都放在src/main/resources下面，利用maven打包时，maven能把这些资源文件打包到相应的jar或者war里。</p>
+<p>有时候，比如mybatis的mapper.xml文件，我们习惯把它和Mapper.java放一起，都在src/main/java下面，这样利用maven打包时，就需要修改pom.xml文件，来把mapper.xml文件一起打包进jar或者war里了，否则，这些文件不会被打包的。(maven认为src/main/java只是java的源代码路径)</p>
+<p>下面通过一个简单的示例来说明:</p>
+<p>项目结构如下所示，有两个UserMaper.xml文件，所在目录不同</p>
+<p><img src="1.png" alt="image"></p>
+<p>默认情况下，在POM.XML目录下执行: mvn clean package 打包命令在target\classes目录下不会把UserMapper.xml打包到下mapper目录下</p>
+<p><img src="2.png" alt="image"></p>
+<p>而resources目录下的文件始终都会打包进jar包或war包</p>
+<p><img src="3.png" alt="image"></p>
+<p>这个时候使用mybatis就会出一些问题，找不到UserMapper所对应的xml文件解决方法有如下几种:</p>
+<p><strong>(1)配置POM.XML的resource把xml也打包到mapper目录下</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 资源目录 --&gt;</span>    </span><br><span class="line">     <span class="tag">&lt;<span class="name">resources</span>&gt;</span>    </span><br><span class="line">         <span class="tag">&lt;<span class="name">resource</span>&gt;</span>    </span><br><span class="line">             <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span>    </span><br><span class="line">             <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span>    </span><br><span class="line"> </span><br><span class="line">             <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，只处理如下配置中包含的资源类型 --&gt;</span>     </span><br><span class="line">	 <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">		  <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">	 <span class="tag">&lt;/<span class="name">includes</span>&gt;</span>  </span><br><span class="line">                  </span><br><span class="line">             <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，不处理如下配置中包含的资源类型（剔除下如下配置中包含的资源类型）--&gt;</span>      </span><br><span class="line">	<span class="tag">&lt;<span class="name">excludes</span>&gt;</span>  </span><br><span class="line">		<span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.yaml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span>  </span><br><span class="line">	<span class="tag">&lt;/<span class="name">excludes</span>&gt;</span>  </span><br><span class="line"> </span><br><span class="line">             <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，指定处理后的资源文件输出目录，默认是$&#123;build.outputDirectory&#125;指定的目录--&gt;</span>      </span><br><span class="line">             <span class="comment">&lt;!--&lt;targetPath&gt;$&#123;build.outputDirectory&#125;&lt;/targetPath&gt; --&gt;</span>      </span><br><span class="line"></span><br><span class="line">             <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，是否对主资源目录开启资源过滤 --&gt;</span>    </span><br><span class="line">             <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span>     </span><br><span class="line">         <span class="tag">&lt;/<span class="name">resource</span>&gt;</span>  			</span><br><span class="line">     <span class="tag">&lt;/<span class="name">resources</span>&gt;</span> 	</span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中**/*这样的写法，是为了保证各级子目录下的资源文件被打包。resources是可以看做是容器，这个容器里面可以放很多个像resource这样的配置。而directory就是配置文件所在的路径，includes从英文单词角度看，就是包含的意思，此时在执行命令，就会把xml也打包到mapper目录下了</p>
+<p><img src="4.png" alt="image"></p>
+<p>Resources官方文档地址为:<a href="http://maven.apache.org/pom.html#Resources" target="_blank" rel="noopener">http://maven.apache.org/pom.html#Resources</a></p>
+<p><strong>(2)maven-resources-plugin插件</strong></p>
+<p>为了使项目结构更为清晰，Maven区别对待Java代码文件和资源文件，maven-compiler-plugin用来编译Java代码，maven-resources-plugin则用来处理资源文件。</p>
+<p>默认的主资源文件目录是src/main/resources，很多用户会需要添加额外的资源文件目录，这个时候就可以通过配置maven-resources-plugin来实现。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        此plugin可以用</span></span><br><span class="line"><span class="comment">        利用此plugin，把源代码中的xml文件，打包到相应位置，</span></span><br><span class="line"><span class="comment">        这里主要是为了打包Mybatis的mapper.xml文件</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-xmls<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>process-sources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;basedir&#125;/target/classes<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>$&#123;basedir&#125;/src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此外，资源文件过滤也是Maven的一大特性，你可以在资源文件中使用${propertyName}形式的Maven属性，然后配置maven-resources-plugin开启对资源文件的过滤，之后就可以针对不同环境通过命令行或者Profile传入属性的值，以实现更为灵活的构建。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">encoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 过滤后缀为pem、pfx的证书文件 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">nonFilteredFileExtensions</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>pem<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>pfx<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>p12<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">nonFilteredFileExtensions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>(3)build-helper-maven-plugin插件</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">      此plugin可以用</span></span><br><span class="line"><span class="comment">      利用此plugin，把源代码中的xml文件，</span></span><br><span class="line"><span class="comment">      打包到相应位置，这里主要是为了打包Mybatis的mapper.xml文件</span></span><br><span class="line"><span class="comment">      --&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>build-helper-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">id</span>&gt;</span>add-resource<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">phase</span>&gt;</span>generate-resources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;<span class="name">goal</span>&gt;</span>add-resource<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                              <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                      <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                              <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2、src-main-resources目录下的xml等资源文件不被打包"><a href="#3-2、src-main-resources目录下的xml等资源文件不被打包" class="headerlink" title="3.2、src/main/resources目录下的xml等资源文件不被打包"></a>3.2、src/main/resources目录下的xml等资源文件不被打包</h4><p>默认resources目录下的文件都会被打包，如果想resources目录下的xml文件不被打包，可通过如下配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--过滤resource下的文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;<span class="name">resource</span>&gt;</span>  </span><br><span class="line">           <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span>  </span><br><span class="line">           <span class="tag">&lt;<span class="name">includes</span>&gt;</span>  </span><br><span class="line">               <span class="tag">&lt;<span class="name">include</span>&gt;</span>*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span>  <span class="comment">&lt;!--打包properties文件--&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">includes</span>&gt;</span>  </span><br><span class="line">           <span class="tag">&lt;<span class="name">excludes</span>&gt;</span>  </span><br><span class="line">               <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>*.xml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span>  <span class="comment">&lt;!--过滤xml与yaml文件--&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>*.yaml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span>  </span><br><span class="line">           <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;/<span class="name">resource</span>&gt;</span>  </span><br><span class="line">   <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>编译之后如下：</p>
+<p><img src="5.png" alt="image"></p>
+<p>当然也可以通过插件来实现</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>validate<span class="tag">&lt;/<span class="name">phase</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span>  </span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">goal</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span>  </span><br><span class="line"> </span><br><span class="line">	<span class="comment">&lt;!-- 并把文件复制到target/conf目录下--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/conf<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span>  </span><br><span class="line">                <span class="tag">&lt;<span class="name">resources</span>&gt;</span>  </span><br><span class="line">                    <span class="tag">&lt;<span class="name">resource</span>&gt;</span>  </span><br><span class="line">                        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span>  </span><br><span class="line">			<span class="comment">&lt;!-- 指定不需要处理的资源 &lt;excludes&gt; &lt;exclude&gt;WEB-INF/*.*&lt;/exclude&gt; &lt;/excludes&gt; --&gt;</span>  </span><br><span class="line">			<span class="tag">&lt;<span class="name">excludes</span>&gt;</span> <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span> <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span>  </span><br><span class="line">                    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span>  </span><br><span class="line">                <span class="tag">&lt;/<span class="name">resources</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>实现的效果如下:</p>
+<p><img src="6.png" alt="image"></p>
+<p>编译好之后，会在target目录下生成conf目录并且把resources目录下的所有文件都自动拷贝到target/conf/目录下。</p>
+<h3 id="4、补充Mybatis、MyBatisPlus-xml文件配置："><a href="#4、补充Mybatis、MyBatisPlus-xml文件配置：" class="headerlink" title="4、补充Mybatis、MyBatisPlus xml文件配置："></a>4、补充Mybatis、MyBatisPlus xml文件配置：</h3><p>默认配置是去Mapper.class 目录下找同名的xml文件，按照上文介绍，如果xml文件和java文件在一起，或者在resources下同名包下，如果通过注解指定了扫描Mapper的包地址，则无需配置xml文件地址。</p>
+<p>如果不一致：则需要要指定扫描所在包的位置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mybatis:</span><br><span class="line">  mapper-locations: classpath*:mapper/*.xml,classpath*:mapper/other/*.xml</span><br><span class="line"></span><br><span class="line">or</span><br><span class="line"></span><br><span class="line">mybatis-plus:</span><br><span class="line">  mapper-locations: classpath*:mapper/*.xml,classpath*:mapper/other/*.xml</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/bianchengme/tags/java/">java</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2019/02/26/%E6%8A%8AMac%E4%B8%8A%E5%A5%BD%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E6%90%AC%E5%88%B0Windows/" rel="prev"  title="把Mac上好用的操作搬到Windows">
+						把Mac上好用的操作搬到Windows 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2018/03/30/Markdown%E8%AF%AD%E6%B3%95/" rel="next"  title="Markdown语法">
+						Markdown语法
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'Maven项目资源文件路径配置理解',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/java/"><div class='name'>java</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/mysql/"><div class='name'>mysql</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/java/" style="font-size: 16px; color: #555">java</a> <a href="/bianchengme/tags/mysql/" style="font-size: 14px; color: #808080">mysql</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

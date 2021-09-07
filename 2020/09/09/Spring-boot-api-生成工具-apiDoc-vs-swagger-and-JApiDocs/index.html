@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>Spring boot api 生成工具 apiDoc vs swagger and JApiDocs | 山芋头</title>
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值" />
+  <meta name="keywords" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/bianchengme/">
+  <link rel="alternate" href="/bianchengme/atom.xml" title="山芋头">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="曾经看过这样一个笑话：程序员最讨厌写文档，比这个还讨厌的事情就是，别人居然不写文档。  文档的确是个令猿头疼的东西哇，但是文档的重要性也是不言而喻。这里就给大家安利两款比较好用的接口文档生成工具：  apidoc 比较好用的静态生成工具，生成静态api文档非常合适； swagger功能强大的动态api工具，带有调试功能，knife4j是对swaggerUI封装的优化，更适合国人风格； Japid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring boot api 生成工具 apiDoc vs swagger and JApiDocs">
+<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/2020/09/09/Spring-boot-api-%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7-apiDoc-vs-swagger-and-JApiDocs/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="曾经看过这样一个笑话：程序员最讨厌写文档，比这个还讨厌的事情就是，别人居然不写文档。  文档的确是个令猿头疼的东西哇，但是文档的重要性也是不言而喻。这里就给大家安利两款比较好用的接口文档生成工具：  apidoc 比较好用的静态生成工具，生成静态api文档非常合适； swagger功能强大的动态api工具，带有调试功能，knife4j是对swaggerUI封装的优化，更适合国人风格； Japid">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/3E3A42C7488F4B28A55A571E547E667E?method=download&shareKey=f4cb66a4dda2c461904f3d17ac6d480f">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/A32C6142B85F4DF5B6573298C86676F8?method=download&shareKey=0473103f88076c2f2e8890f7fca8a8f9">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/953F265590674B73989A418C301FFE67?method=download&shareKey=09939a1241d68066e42a2e3a3faec42b">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/8D095CF9E7CA47259ACB4DA34075E844?method=download&shareKey=9c3d003719cc502734c3739bbd6d5221">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/1C94F35AE9A24495A8E2D1699C376FF2?method=download&shareKey=f5202a26d0dfa4e0e7e3a84d1804703c">
+<meta property="article:published_time" content="2020-09-09T14:19:23.000Z">
+<meta property="article:modified_time" content="2021-09-07T07:26:31.782Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/3E3A42C7488F4B28A55A571E547E667E?method=download&shareKey=f4cb66a4dda2c461904f3d17ac6d480f">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href='//cdn.bootcss.com/node-waves/0.7.5/waves.min.css' rel='stylesheet'>
+  
+<link rel="stylesheet" href="/bianchengme/style.css">
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+</head>
+
+<body>
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/bianchengme/' >
+				山芋头
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/bianchengme/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/bianchengme/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-gallery' href='https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN' target="_blank" rel="noopener">
+								Gallery
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/bianchengme/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/bianchengme/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/bianchengme/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="https://photos.google.com/album/AF1QipNoqKYgspQo5O1YhlFXGCQ7p575KBH3Yxf8WHL4?hl=zh-CN" target="_blank" rel="noopener" class="nav-gallery nav">
+				Gallery
+			</a>
+		
+			<a href="/bianchengme/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-Spring-boot-api-生成工具-apiDoc-vs-swagger-and-JApiDocs"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/bianchengme/2020/09/09/Spring-boot-api-%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7-apiDoc-vs-swagger-and-JApiDocs/">
+    	Spring boot api 生成工具 apiDoc vs swagger and JApiDocs
+    </a>
+  </h2>
+	<time>
+	  Sep 9, 2020
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-apidoc"><span class="toc-number">1.</span> <span class="toc-text">1. apidoc</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#简介"><span class="toc-number">1.0.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#使用"><span class="toc-number">1.0.2.</span> <span class="toc-text">使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-swagger"><span class="toc-number">2.</span> <span class="toc-text">2. swagger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具"><span class="toc-number">3.</span> <span class="toc-text">3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<blockquote>
+<p>曾经看过这样一个笑话：程序员最讨厌写文档，比这个还讨厌的事情就是，别人居然不写文档。</p>
+</blockquote>
+<p>文档的确是个令猿头疼的东西哇，但是文档的重要性也是不言而喻。这里就给大家安利两款比较好用的接口文档生成工具：</p>
+<ul>
+<li>apidoc 比较好用的静态生成工具，生成静态api文档非常合适；</li>
+<li>swagger功能强大的动态api工具，带有调试功能，knife4j是对swaggerUI封装的优化，更适合国人风格；</li>
+<li>Japidocs 新开源的静态生成工具用的人虽然没有上面两个多，但是只需要java环境即可，也是不错的api生成工具，值得尝试。</li>
+</ul>
+<h3 id="1-apidoc"><a href="#1-apidoc" class="headerlink" title="1. apidoc"></a>1. apidoc</h3><h5 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h5><p>apidoc是一款可以由源代码中的注释直接自动生成api接口文档的工具，它几乎支持目前主流的所有风格的注释。</p>
+<h5 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h5><p>首先你的环境必须要安装了node.js.然后通过以下的命令安装apidoc：</p>
+<blockquote>
+<p>npm install apidoc -g</p>
+</blockquote>
+<p>在你的项目根目录下添加apidoc.json文件，这个文件主要包含一些项目的描述信息，例如标题、介绍、版本等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;example&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;0.1.0&quot;,</span><br><span class="line">  &quot;description&quot;: &quot;apiDoc basic example&quot;,</span><br><span class="line">  &quot;title&quot;: &quot;Custom apiDoc browser title&quot;,</span><br><span class="line">  &quot;url&quot; : &quot;https:&#x2F;&#x2F;api.github.com&#x2F;v1&quot;</span><br><span class="line">&#125;</span><br><span class="line">1234567</span><br></pre></td></tr></table></figure>
+
+<p>在你的代码注释里加入apidoc的注解，例如这样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span><br><span class="line">     * @apiGroup Product</span><br><span class="line">     * @api &#123;GET&#125; &#x2F;product&#x2F;&#123;id&#125;  查询一个产品</span><br><span class="line">     * @apiDescription 指定产品id , 删除产品的全部信息，包括关联的schema</span><br><span class="line">     * @apiParam &#123;String&#125; id 产品id(必填*)</span><br><span class="line">     * @apiSuccessExample SuccessExample</span><br><span class="line">     * HTTP&#x2F;1.1 200</span><br><span class="line">     * &#123;</span><br><span class="line">     * id: &#39;xxx&#39;,</span><br><span class="line">     * modelId: &#39;xxxxx&#39;,</span><br><span class="line">     * name: &#39;xxx&#39;,</span><br><span class="line">     * intro: &#39;xxxx&#39;</span><br><span class="line">     * &#125;</span><br><span class="line">     * @apiErrorExample ErrorExample</span><br><span class="line">     * HTTP&#x2F;1.1 600</span><br><span class="line">     * 具体的异常信息</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @GetMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public Product getOneProduct(@PathVariable String id)</span><br><span class="line">    &#123;</span><br><span class="line">        return productServ.findOne(id);</span><br><span class="line">    &#125;</span><br><span class="line">12345678910111213141516171819202122</span><br></pre></td></tr></table></figure>
+
+<p>常用的一些注解如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@api 定义API的请求方法、路径和名字</span><br><span class="line">@apiDescription 定义API的描述</span><br><span class="line">@apiGroup 定义API的分组</span><br><span class="line">@apiParam 定义API的参数</span><br><span class="line">@apiParamExample 参数请求的事例</span><br><span class="line">@apiVersion 版本</span><br><span class="line">@apiErrorExample API错误示例</span><br><span class="line">@apiSuccessExample API正常示例</span><br><span class="line">12345678</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以利用apidoc的命令来生成接口文档了：<br><img src="https://note.youdao.com/yws/api/personal/file/3E3A42C7488F4B28A55A571E547E667E?method=download&shareKey=f4cb66a4dda2c461904f3d17ac6d480f" alt="img"></p>
+<p>然后当前目录下会生成一个新的apidoc目录，就是新生成的接口文档文件。<br><img src="https://note.youdao.com/yws/api/personal/file/A32C6142B85F4DF5B6573298C86676F8?method=download&shareKey=0473103f88076c2f2e8890f7fca8a8f9" alt="img"></p>
+<p>打开 index.html 即可看到生成的接口文档：<br><img src="https://note.youdao.com/yws/api/personal/file/953F265590674B73989A418C301FFE67?method=download&shareKey=09939a1241d68066e42a2e3a3faec42b" alt="img"></p>
+<h3 id="2-swagger"><a href="#2-swagger" class="headerlink" title="2. swagger"></a>2. swagger</h3><p>在这里俺用 springBoot 整合swagger2 做了个Restful Api 的接口小demo</p>
+<p><a href="https://github.com/caigoumiao/springboot-swagger" target="_blank" rel="noopener">github 源码传送门☛☛☛</a></p>
+<p>首先项目中得添加swagger2的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;io.springfox&#x2F;springfox-swagger2 --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.springfox&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;springfox-swagger2&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;io.springfox&#x2F;springfox-swagger-ui --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.springfox&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;springfox-swagger-ui&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">123456789101112</span><br></pre></td></tr></table></figure>
+
+<p>创建swagger2 的配置类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableSwagger2</span><br><span class="line">public class SwaggerConfig</span><br><span class="line">&#123;</span><br><span class="line">    public Docket createApi()&#123;</span><br><span class="line">        return new Docket(DocumentationType.SWAGGER_2)</span><br><span class="line">                .apiInfo(apiInfo())</span><br><span class="line">                .select()</span><br><span class="line">                .apis(RequestHandlerSelectors.basePackage(&quot;com.miao.springbootswagger&quot;))</span><br><span class="line">                .paths(PathSelectors.any())</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 创建api的基本信息</span><br><span class="line">    private ApiInfo apiInfo()&#123;</span><br><span class="line">        return new ApiInfoBuilder()</span><br><span class="line">                .title(&quot;springBoot 整合 Swagger2 实例&quot;)</span><br><span class="line">                .description(&quot;更多技术内容分享见博客：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_24871519&quot;)</span><br><span class="line">                .termsOfServiceUrl(&quot;https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_24871519&quot;)</span><br><span class="line">                .version(&quot;1.0&quot;)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">1234567891011121314151617181920212223</span><br></pre></td></tr></table></figure>
+
+<p>为接口添加swagger的注解：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">@RequestMapping(&quot;&#x2F;user&quot;)</span><br><span class="line">public class UserController</span><br><span class="line">&#123;</span><br><span class="line">    private static Map&lt;String, User&gt; users&#x3D;new ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;添加用户&quot;, notes &#x3D; &quot;添加一条用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;user&quot;, value &#x3D; &quot;用户详细实体user&quot;, required &#x3D; true, dataType &#x3D; &quot;User&quot;)</span><br><span class="line">    @PostMapping(&quot;&#x2F;add&quot;)</span><br><span class="line">    public User add(User user)&#123;</span><br><span class="line">        String id&#x3D;UUID();</span><br><span class="line">        while(users.containsKey(id))&#123;</span><br><span class="line">            id&#x3D;UUID();</span><br><span class="line">        &#125;</span><br><span class="line">        user.setId(id);</span><br><span class="line">        users.put(id, user);</span><br><span class="line">        return user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;获取一个用户&quot;, notes &#x3D; &quot;根据用户id获取用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;id&quot;, value &#x3D; &quot;用户ID&quot;, required &#x3D; true, dataType &#x3D; &quot;String&quot;)</span><br><span class="line">    @GetMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public User getOne(@PathVariable String id)&#123;</span><br><span class="line">        if(!users.containsKey(id))&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return users.get(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;获取所有用户信息列表&quot;)</span><br><span class="line">    @GetMapping(&quot;&#x2F;&quot;)</span><br><span class="line">    public List&lt;User&gt; getUsers()&#123;</span><br><span class="line">        return new ArrayList&lt;&gt;(users.values());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;更新用户信息&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;user&quot;, value &#x3D; &quot;用户信息实体&quot;,required &#x3D; true, dataType &#x3D; &quot;User&quot;)</span><br><span class="line">    @PutMapping(&quot;&#x2F;&quot;)</span><br><span class="line">    public User updateOne(User u)&#123;</span><br><span class="line">        User tmp &#x3D; users.get(u.getId());</span><br><span class="line">        if(tmp &#x3D;&#x3D; null)&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        if(u.getName()!&#x3D;null)&#123;</span><br><span class="line">            tmp.setName(u.getName());</span><br><span class="line">        &#125;</span><br><span class="line">        if(u.getAge() !&#x3D; null)&#123;</span><br><span class="line">            tmp.setAge(u.getAge());</span><br><span class="line">        &#125;</span><br><span class="line">        return tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ApiOperation(value &#x3D; &quot;删除用户&quot;)</span><br><span class="line">    @ApiImplicitParam(name &#x3D; &quot;id&quot;, value &#x3D; &quot;用户ID&quot;, required &#x3D; true, dataType &#x3D; &quot;String&quot;)</span><br><span class="line">    @DeleteMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">    public void delete(@PathVariable String id)&#123;</span><br><span class="line">        if(users.containsKey(id))&#123;</span><br><span class="line">            users.remove(id);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private String UUID()&#123;</span><br><span class="line">        return UUID.randomUUID().toString().replace(&quot;-&quot;, &quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465</span><br></pre></td></tr></table></figure>
+
+<p>上述都完成后，启动springBoot 项目，访问 <a href="http://localhost/" target="_blank" rel="noopener">http://localhost</a>:/swagger-ui.html 即可访问接口文档页面，具体页面如下：<br><img src="https://note.youdao.com/yws/api/personal/file/8D095CF9E7CA47259ACB4DA34075E844?method=download&shareKey=9c3d003719cc502734c3739bbd6d5221" alt="img"></p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/1C94F35AE9A24495A8E2D1699C376FF2?method=download&shareKey=f5202a26d0dfa4e0e7e3a84d1804703c" alt="img"></p>
+<h3 id="3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具"><a href="#3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具" class="headerlink" title="3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具"></a>3、JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具</h3><p>JApiDocs是一个无需额外注解、开箱即用的SpringBoot接口文档生成工具。</p>
+<p>编写和维护API文档这个事情，对于后端程序员来说，是一件恼人但又不得不做的事情，我们都不喜欢写文档，但除非项目前后端代码都是自己写的，否则API文档将是前后端协作中一个不可或缺的沟通界面。</p>
+<p>既然不可避免，那就想办法弄个轮子吧。人生苦短，必须偷懒。</p>
+<p>相比Swagger要写一堆注解，Spring RestDocs需要写测试用例，才能生成API文档。JApiDocs 具有无痛集成的特点，你只需花几分钟就能知道它怎么用了。</p>
+<p>快速开始</p>
+<p>要使得JApiDcos正确工作，你写的代码应该是像下面的样子的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">* 用户接口</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/api/user/"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"></span><br><span class="line">publicclassUserController&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    * 用户列表</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*<span class="doctag">@paramlistForm</span></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping</span>(path =<span class="string">"list"</span>, method = &#123;RequestMethod.GET,  RequestMethod.POST&#125;  )</span><br><span class="line"></span><br><span class="line">publicApiResult&gt; list(UserListForm listForm)&#123;</span><br><span class="line"></span><br><span class="line">returnnull;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    * 保存用户</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*<span class="doctag">@paramuserForm</span></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@PostMapping</span>(path =<span class="string">"save"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function">publicApiResult <span class="title">saveUser</span><span class="params">(@RequestBodyUserForm userForm)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">returnnull;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们给Controller类和方法加上必要的注释，给接口方法返回相关的对象类型。是的，这样JApiDocs就能解析到相关的接口信息了，就跟我们平时写的代码是差不多的，但要注意，你要通过@param来告诉JApiDocs接口的参数，但在IDE的帮助下，这个工作将是轻松愉悦的：</p>
+<p>然后你在任意一个main入口方法执行下面的代码就可以生成文档了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DocsConfigconfig&#x3D; new DocsConfig();</span><br><span class="line"></span><br><span class="line">config.setProjectPath(&quot;your springboot project path&quot;); &#x2F;&#x2F; 项目根目录</span><br><span class="line"></span><br><span class="line">config.setProjectName(&quot;ProjectName&quot;); &#x2F;&#x2F; 项目名称</span><br><span class="line"></span><br><span class="line">config.setApiVersion(&quot;V1.0&quot;);      &#x2F;&#x2F; 声明该API的版本</span><br><span class="line"></span><br><span class="line">config.setDocsPath(&quot;your api docs path&quot;); &#x2F;&#x2F; 生成API 文档所在目录</span><br><span class="line"></span><br><span class="line">config.setAutoGenerate(Boolean.TRUE);  &#x2F;&#x2F; 配置自动生成</span><br><span class="line"></span><br><span class="line">Docs.buildHtmlDocs(config); &#x2F;&#x2F; 执行生成文档</span><br></pre></td></tr></table></figure>
+
+<p>接下来你只管好好写代码，生成Api文档的工作就可以交给JApiDocs了，你不需要再为额外编写和维护文档而烦恼。</p>
+<p>功能特性</p>
+<p>1、代码即文档</p>
+<p>JApiDocs是通过直接解析SpringBoot的源码语法来工作的，所以只要Controller的语法符合一定的代码规范，有合理的注释，就可以直接导出文档。</p>
+<p>2、支持导出HTML</p>
+<p>便捷的导航和接口查看界面；可本地预览，或者部署到HTTP服务器。推荐部署到服务器，方便前后端展开协作。</p>
+<p>3、同步导出客户端Model代码</p>
+<p>支持导出Android端的 Java 和iOS端的 Object C Model代码，减少前端程序员的重复编码工作。</p>
+<p>4、更多特性</p>
+<p>支持接口搜索；支持不同版本和英文文档；自定义扩展等。</p>
+<p>简洁的文档</p>
+<p>再好用的东西，如果没有文档说明，别人也无从入手。为了让大家尽快上手，JApiDocs准备了一份极简的文档说明，确保你在几分钟就能用上JApiDocs。</p>
+<p>花5分钟不到就能认识一个提高工作效率的工具，让你把更多的时间花在更加有价值的事情上，你确认不看一下吗？</p>
+<p>“</p>
+<p>仓库地址：</p>
+<p><a href="https://github.com/YeDaxia/JApiDocs" target="_blank" rel="noopener">https://github.com/YeDaxia/JApiDocs</a></p>
+<p>中文文档：</p>
+<p><a href="https://japidocs.agilestudio.cn/#/zh-cn/" target="_blank" rel="noopener">https://japidocs.agilestudio.cn/#/zh-cn/</a></p>
+
+  	</div>
+	  
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/bianchengme/2020/10/11/%E9%A1%B9%E7%9B%AE%E5%9F%BA%E7%BA%BF%E7%9B%AE%E5%BD%95-%E6%96%B9%E4%BE%BF%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E4%BA%A4%E6%8E%A5/" rel="prev"  title="项目基线目录-方便项目管理与交接">
+						项目基线目录-方便项目管理与交接 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/bianchengme/2020/08/09/Java-enum%E5%B8%B8%E8%A7%81%E7%9A%84%E7%94%A8%E6%B3%95/" rel="next"  title="Java enum常见的用法">
+						Java enum常见的用法
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+	
+</article>
+<script>
+	window.subData = {
+		title: 'Spring boot api 生成工具 apiDoc vs swagger and JApiDocs',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+
+<div class='header'>jmme@foxmail.com</div>
+<div class='content'>
+<div class='desc'>Tempora mutantur, nos et mutamur in illis ...</div>
+</div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://ccoooss.com">
+            <div class='name'>ClassicOldSong</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://frantic1048.logdown.com/">
+            <div class='name'>Frantic1048</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://hclmaster.github.io/">
+            <div class='name'>Hclmaster</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://whst.github.io/">
+            <div class='name'>WANG Hsü-Tung</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+  <section class='m_widget categories'>
+<div class='header'>Categories</div>
+<div class='content'>
+    
+    <ul class="entry">
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/"><div class='name'>Docker</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/"><div class='name'>JAVA</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/JAVA/JVM/"><div class='name'>JVM</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Markdown/"><div class='name'>Markdown</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Docker/Nacos/"><div class='name'>Nacos</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Objective-C/"><div class='name'>Objective-C</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/Windows/"><div class='name'>Windows</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/Xcode/"><div class='name'>Xcode</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/flutter/"><div class='name'>flutter</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/git/"><div class='name'>git</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/iOS/"><div class='name'>iOS</div><div class='badget'>16</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/java/"><div class='name'>java</div><div class='badget'>2</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/mysql/"><div class='name'>mysql</div><div class='badget'>1</div></a></li>
+    
+        <li><a class="flat-box" href="/bianchengme/categories/vue/"><div class='name'>vue</div><div class='badget'>1</div></a></li>
+    
+    </ul>
+    
+</div>
+</section>
+
+  
+<div class="m_widget tagcloud">
+    <div class="header">Tags</div>
+    <div class='content'>
+        <a href="/bianchengme/tags/BUG/" style="font-size: 14px; color: #808080">BUG</a> <a href="/bianchengme/tags/Docker/" style="font-size: 14px; color: #808080">Docker</a> <a href="/bianchengme/tags/JAVA/" style="font-size: 14px; color: #808080">JAVA</a> <a href="/bianchengme/tags/JVM/" style="font-size: 14px; color: #808080">JVM</a> <a href="/bianchengme/tags/Markdown/" style="font-size: 14px; color: #808080">Markdown</a> <a href="/bianchengme/tags/Objective-C/" style="font-size: 18px; color: #2b2b2b">Objective-C</a> <a href="/bianchengme/tags/RunTime/" style="font-size: 14px; color: #808080">RunTime</a> <a href="/bianchengme/tags/Swift/" style="font-size: 14px; color: #808080">Swift</a> <a href="/bianchengme/tags/UI/" style="font-size: 16px; color: #555">UI</a> <a href="/bianchengme/tags/Windows/" style="font-size: 14px; color: #808080">Windows</a> <a href="/bianchengme/tags/Xcode/" style="font-size: 14px; color: #808080">Xcode</a> <a href="/bianchengme/tags/flutter/" style="font-size: 16px; color: #555">flutter</a> <a href="/bianchengme/tags/git/" style="font-size: 14px; color: #808080">git</a> <a href="/bianchengme/tags/hook/" style="font-size: 14px; color: #808080">hook</a> <a href="/bianchengme/tags/iOS/" style="font-size: 20px; color: #000">iOS</a> <a href="/bianchengme/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 14px; color: #808080">iOS真机运行</a> <a href="/bianchengme/tags/java/" style="font-size: 16px; color: #555">java</a> <a href="/bianchengme/tags/mysql/" style="font-size: 14px; color: #808080">mysql</a> <a href="/bianchengme/tags/nacos/" style="font-size: 14px; color: #808080">nacos</a> <a href="/bianchengme/tags/vue/" style="font-size: 14px; color: #808080">vue</a> <a href="/bianchengme/tags/%E4%BC%98%E5%8C%96/" style="font-size: 14px; color: #808080">优化</a> <a href="/bianchengme/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14px; color: #808080">多线程</a> <a href="/bianchengme/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 14px; color: #808080">学习计划</a> <a href="/bianchengme/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 14px; color: #808080">工具</a> <a href="/bianchengme/tags/%E7%AE%97%E6%B3%95/" style="font-size: 14px; color: #808080">算法</a> <a href="/bianchengme/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 14px; color: #808080">网络</a> <a href="/bianchengme/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 14px; color: #808080">部署</a> <a href="/bianchengme/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 14px; color: #808080">面试</a>
+    </div>
+</div>
+
+
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/stkevintan" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="https://twitter.com/kevinsfork" class="social twitter"
+          target="_blank" rel="external">
+          <span class="icon icon-twitter"></span>
+        </a>
+      
+        <a href="/atom.xml" class="social rss"
+          target="_blank" rel="external">
+          <span class="icon icon-rss"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' target="_blank" rel="noopener" class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+
+<script src="/bianchengme/js/jquery.fitvids.js"></script>
+
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/bianchengme/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+
+<script src="/bianchengme/js/search.js"></script>
+
+
+<script src="/bianchengme/js/app.js"></script>
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
