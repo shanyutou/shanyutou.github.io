@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>山芋头</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="记录和总结让知识得到积累，分享能创造价值">
+<meta property="og:type" content="website">
+<meta property="og:title" content="山芋头">
+<meta property="og:url" content="https://shanyutou.github.io/page/5/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="记录和总结让知识得到积累，分享能创造价值">
+<meta property="og:locale" content="cn">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="山芋头" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">山芋头</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">记录和分享能创造价值</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://shanyutou.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-iOS开发之fishhook" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8Bfishhook/" class="article-date">
+  <time datetime="2020-03-31T13:34:41.000Z" itemprop="datePublished">2020-03-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8Bfishhook/">iOS开发之fishhook</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="HOOK之Method-Swizzle"><a href="#HOOK之Method-Swizzle" class="headerlink" title="HOOK之Method Swizzle"></a>HOOK之Method Swizzle</h3><p><code>method_exchangeImplementations</code>利用OC的Runtime特性，动态改变SEL（方法编号）和IMP（方法实现）的对应关系，达到OC方法调用流程改变的目的。主要用于OC方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;objc/message.h&gt;</span></span></span><br><span class="line"><span class="comment">//实现</span></span><br><span class="line">    Method old = class_getInstanceMethod(class, oldMethod);</span><br><span class="line">    Method news = class_getInstanceMethod(class, newMethod);</span><br><span class="line">    method_exchangeImplementations(old, news);</span><br></pre></td></tr></table></figure>
+
+<h2 id="HOOK之-fishhook"><a href="#HOOK之-fishhook" class="headerlink" title="HOOK之 fishhook"></a>HOOK之 fishhook</h2><p>Facebook提供的一个动态修改链接mach-O文件的工具。利用MachO文件加载原理，原理是通过修改懒加载和非懒加载两个表的指针达到C函数HOOK的目的,所以不能修改自己定义的函数，只能修改系统库函数。</p>
+<p>####demo</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">"fishhook.h"</span></span></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    NSLog(@<span class="string">"123"</span>);</span><br><span class="line">    <span class="comment">//定义rebinding结构体</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">struct rebinding &#123;</span></span><br><span class="line"><span class="comment">  const char *name;//需要HOOK的函数名称,字符串</span></span><br><span class="line"><span class="comment">  void *replacement;//替换到那个新的函数上(函数指针,也就是函数的名称)</span></span><br><span class="line"><span class="comment">  void **replaced;//保存原始函数指针变量的指针(它是一个二级指针!)</span></span><br><span class="line"><span class="comment">&#125;;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span> <span class="title">nslogBind</span>;</span></span><br><span class="line">    <span class="comment">//函数的名称</span></span><br><span class="line">    nslogBind.name = <span class="string">"NSLog"</span>;</span><br><span class="line">    <span class="comment">//新的函数地址</span></span><br><span class="line">    nslogBind.replacement = myNSLog;</span><br><span class="line">    <span class="comment">//保存原始函数地址的变量的指针</span></span><br><span class="line">    nslogBind.replaced = (<span class="keyword">void</span> *)&amp;old_nslog;</span><br><span class="line">    <span class="comment">//定义数组</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span> <span class="title">rebs</span>[] = &#123;</span>nslogBind&#125;;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     arg1 : 存放rebinding结构体的数组</span></span><br><span class="line"><span class="comment">     arg2 : 数组的长度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    rebind_symbols(rebs, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//函数指针,用保存原始的函数的地址</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">void</span> <span class="params">(*old_nslog)</span><span class="params">(NSString *format, ...)</span></span>;</span><br><span class="line"><span class="comment">//新的NSLog</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myNSLog</span><span class="params">(NSString *format, ...)</span></span>&#123;</span><br><span class="line">    format = [format stringByAppendingString:@<span class="string">"\n勾上了!"</span>];</span><br><span class="line">    <span class="comment">//再调用原来的</span></span><br><span class="line">    old_nslog(format); </span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">void</span>)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    NSLog(@<span class="string">"点击了屏幕!!"</span>);   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>###原理</p>
+<ul>
+<li>APP运行时，MachO被dyld加载进内存</li>
+<li>ASLR让MachO被加载时内存地址随机分配</li>
+<li>苹果的PIC位置与代码独立技术，让MachO调用系统库函数时，先在MachO表中的_DATA段建立一个指针指向外部库函数，dyld加载MachO时知道外部库函数的调用地址，会动态的把_DATA段的指针指向外部库函数</li>
+<li>fishhook通过nslogBind.name = “NSLog” 就能替换库函数，是因为MachO的符号表里有NSLog等，可以通过符号表找到NSLog字符串</li>
+</ul>
+<p>###使用fishhook基本防护<br>OC的Runtime特性，替换执行的方法，要用到系统方法<code>method_exchangeImplementations</code>、 <code>method_getImplementation</code>、<code>method_setImplementation</code>等，就可以用fishhook动态替换这些系统方法，方式HOOK。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">"fishhook.h"</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;objc/message.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">@implementation hookMgr</span><br><span class="line"><span class="comment">//专门HOOK</span></span><br><span class="line">+(<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//基本防护 会检测到外部的hook</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span>  <span class="title">exchangebinding</span>;</span></span><br><span class="line">   exchangebinding.name = <span class="string">"method_exchangeImplementations"</span>;</span><br><span class="line">   exchangebinding.replacement = myExchange;</span><br><span class="line">   exchangebinding.replaced = (<span class="keyword">void</span> *)&amp;exchangeP;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span>  <span class="title">getIMPbinding</span>;</span></span><br><span class="line">   getIMPbinding.name = <span class="string">"method_getImplementation"</span>;</span><br><span class="line">   getIMPbinding.replacement = myExchange;</span><br><span class="line">   getIMPbinding.replaced = (<span class="keyword">void</span> *)&amp;getIMP;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span>  <span class="title">setIMPbinding</span>;</span></span><br><span class="line">   setIMPbinding.name = <span class="string">"method_setImplementation"</span>;</span><br><span class="line">   setIMPbinding.replacement = myExchange;</span><br><span class="line">   setIMPbinding.replaced = (<span class="keyword">void</span> *)&amp;setIMP;</span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">rebinding</span> <span class="title">rebs</span>[] = &#123;</span>exchangebinding,getIMPbinding,setIMPbinding&#125;;</span><br><span class="line">   </span><br><span class="line">   rebind_symbols(rebs, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//保留原来的交换函数</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">void</span> <span class="params">(*exchangeP)</span><span class="params">(Method _Nonnull m1, Method _Nonnull m2)</span></span>;</span><br><span class="line">IMP _Nonnull (*setIMP)(Method _Nonnull m, IMP _Nonnull imp);</span><br><span class="line">IMP _Nonnull (*getIMP)(Method _Nonnull m);</span><br><span class="line"></span><br><span class="line"><span class="comment">//新的函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myExchange</span><span class="params">(Method _Nonnull m1, Method _Nonnull m2)</span></span>&#123;</span><br><span class="line">   NSLog(@<span class="string">"外部hook  不给过"</span>);</span><br><span class="line">   <span class="comment">//这里可以做些让程序崩溃的事情</span></span><br><span class="line">   <span class="built_in">exit</span>(<span class="number">0</span>);<span class="comment">//闪退，只要发现你hook我，我就闪退</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8Bfishhook/" data-id="cktauybca005avgucb49q0gu3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook/" rel="tag">hook</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发之Runloop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8BRunloop/" class="article-date">
+  <time datetime="2020-03-31T09:14:31.000Z" itemprop="datePublished">2020-03-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8BRunloop/">iOS开发之Runloop</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8BRunloop/" data-id="cktauybbo0034vgucesx9egfx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS多线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/28/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="article-date">
+  <time datetime="2020-03-28T04:15:14.000Z" itemprop="datePublished">2020-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/28/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B/">iOS多线程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在开发工作中，多线程的使用还是很频繁的，不过对多线程的总结以及多线程的原理的探究一直没有做过。</p>
+<p><strong>使用场景</strong></p>
+<p>多线程的使用场景一般都是耗时操作，如API请求、加载网络图片、视频、歌曲等资源，另外还有一些延时操作。抽象的说就是充分发挥多核处理器的优势,并发(同时执行) 执行任务让系统运行的更快、更流畅。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ol>
+<li>进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单元.</li>
+<li>进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程,我们可以理解为手机上的一个app.</li>
+<li>每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源</li>
+</ol>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ol>
+<li>程序执行流的最小单元，线程是进程中的一个实体.</li>
+<li>一个进程要想执行任务,必须至少有一条线程.应用程序启动的时候，系统会默认开启一条线程,也就是主线程</li>
+</ol>
+<h3 id="进程和线程的关系"><a href="#进程和线程的关系" class="headerlink" title="进程和线程的关系"></a>进程和线程的关系</h3><ol>
+<li>线程是进程的执行单元，进程的所有任务都在线程中执行</li>
+<li>线程是 CPU 分配资源和调度的最小单位</li>
+<li>一个程序可以对应多个进程(多进程),一个进程中可有多个线程,但至少要有一条线程</li>
+<li>同一个进程内的线程共享进程资源</li>
+</ol>
+<h3 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h3><p>同一时间，CPU只能处理1条线程，只有1条线程在执行。多线程并发执行，其实是CPU快速地在多条线程之间调度（切换）。如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象；</p>
+<p><strong>优势</strong></p>
+<ul>
+<li>充分发挥多核处理器的优势，将不同的任务分配给不同的处理器，真正进行“并行运算”状态；</li>
+<li>将耗时、轮询或者并发需求高的任务分配到其它线程执行，并有主线程统一更新界面，会是应用程序更加流畅，用户体验更好；</li>
+<li>当硬件处理器数量的增加，程序运行更快，而无需做任何调整；</li>
+</ul>
+<p><strong>难点</strong></p>
+<ul>
+<li>开启线程需要占用一定的内存空间（默认情况下，主线程占用1M，子线程占用512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能</li>
+<li>线程越多，CPU在调度线程上的开销就越大</li>
+<li>程序设计更加复杂：比如线程之间的通信、多线程的数据共享</li>
+</ul>
+<h2 id="任务和队列"><a href="#任务和队列" class="headerlink" title="任务和队列"></a>任务和队列</h2><p>实际开发中直接创建线程使用比较复杂，复杂情况通常通过队列派发任务方式实现多线程任务调度更便捷、高效。</p>
+<h3 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h3><p>就是执行操作的意思，也就是在线程中执行的那段代码。在 GCD 中是放在 block 中的。执行任务有两种方式：同步执行（sync）和异步执行（async）</p>
+<ul>
+<li>同步(Sync)：同步添加任务到指定的队列中，在添加的任务执行结束之前，会一直等待，直到队列里面的任务完成之后再继续执行，即会阻塞线程。只能在当前线程中执行任务(是当前线程，不一定是主线程)，不具备开启新线程的能力。</li>
+<li>异步(Async)：线程会立即返回，无需等待就会继续执行下面的任务，不阻塞当前线程。可以在新的线程中执行任务，具备开启新线程的能力(并不一定开启新线程)。如果不是添加到主队列上，异步会在子线程中执行任务</li>
+</ul>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>队列（Dispatch Queue）：这里的队列指执行任务的等待队列，即用来存放任务的队列。队列是一种特殊的线性表，采用 FIFO（先进先出）的原则，即新任务总是被插入到队列的末尾，而读取任务的时候总是从队列的头部开始读取。每读取一个任务，则从队列中释放一个任务<br>在 GCD 中有两种队列：串行队列和并发队列。两者都符合 FIFO（先进先出）的原则。两者的主要区别是：执行顺序不同，以及开启线程数不同。</p>
+<h4 id="串行队列（Serial-Dispatch-Queue）："><a href="#串行队列（Serial-Dispatch-Queue）：" class="headerlink" title="串行队列（Serial Dispatch Queue）："></a>串行队列（Serial Dispatch Queue）：</h4><p>同一时间内，队列中只能执行一个任务，只有当前的任务执行完成之后，才能执行下一个任务。（只开启一个线程，一个任务执行完毕后，再执行下一个任务）。主队列是主线程上的一个串行队列,是系统自动为我们创建的</p>
+<h4 id="并发队列（Concurrent-Dispatch-Queue）："><a href="#并发队列（Concurrent-Dispatch-Queue）：" class="headerlink" title="并发队列（Concurrent Dispatch Queue）："></a>并发队列（Concurrent Dispatch Queue）：</h4><p>同时允许多个任务并发执行。（可以开启多个线程，并且同时执行任务）。并发队列的并发功能只有在异步（dispatch_async）函数下才有效</p>
+<p><img src="01queues.png" alt="queues"></p>
+<h2 id="iOS-多线程实现"><a href="#iOS-多线程实现" class="headerlink" title="iOS 多线程实现"></a>iOS 多线程实现</h2><p>主要有三种：NSThread、NSoperationQueue、GCD</p>
+<ol>
+<li>NSThread：轻量级别的多线程技术<br>是我们自己手动开辟的子线程，如果使用的是初始化方式就需要我们自己启动，如果使用的是构造器方式它就会自动启动。只要是我们手动开辟的线程，都需要我们自己管理该线程，不只是启动，还有该线程使用完毕后的资源回收</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2020/03/28/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B/" data-id="cktauybbf0028vguceh185rb2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发Objective-C总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/05/iOS%E5%BC%80%E5%8F%91Objective-C%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-06-05T02:41:26.000Z" itemprop="datePublished">2019-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/05/iOS%E5%BC%80%E5%8F%91Objective-C%E6%80%BB%E7%BB%93/">iOS开发Objective-C总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Objective-C语言特性：分类、扩展、代理、通知、KVO、KVC、属性"><a href="#Objective-C语言特性：分类、扩展、代理、通知、KVO、KVC、属性" class="headerlink" title="Objective_C语言特性：分类、扩展、代理、通知、KVO、KVC、属性"></a>Objective_C语言特性：分类、扩展、代理、通知、KVO、KVC、属性</h1><p>分类（category）<br>扩展（Extension）<br>代理（Delegate）<br>通知（NSNotification)<br>KVO (Key-value observing)<br>KVC (Key-value coding)<br>属性关键字</p>
+<h2 id="一、分类"><a href="#一、分类" class="headerlink" title="一、分类"></a>一、分类</h2><p><strong>1.分类的作用？</strong><br>声明私有方法，分解体积大的类文件，把framework的私有方法公开（官方不推荐）</p>
+<p><strong>2.分类的特点</strong><br>运行时决议，可以为系统类添加分类 。<br>说得详细些，在运行时时期，将 Category 中的实例方法列表、协议列表、属性列表添加到主类中后（所以Category中的方法在方法列表中的位置是在主类的同名方法之前的），然后会递归调用所有类的 load 方法，这一切都是在main函数之前执行的。</p>
+<p><strong>3.分类可以添加哪些内容？</strong><br>实例方法，类方法，协议，属性（添加getter和setter方法，并没有实例变量，添加实例变量需要用关联对象）</p>
+<p><strong>4.如果工程里有两个分类A和B，两个分类中有一个同名的方法，哪个方法最终生效？</strong><br>取决于分类的编译顺序，最后编译的那个分类的同名方法最终生效，而之前的都会被覆盖掉(这里并不是真正的覆盖，因为其余方法仍然存在，只是访问不到，因为在动态添加类的方法的时候是倒序遍历方法列表的，而最后编译的分类的方法会放在方法列表前面，访问的时候就会先被访问到，同理如果声明了一个和原类方法同名的方法，也会覆盖掉原类的方法)。</p>
+<p><strong>5.如果声明了两个同名的分类会怎样？</strong><br>会报错，所以第三方的分类，一般都带有命名前缀</p>
+<p><strong>6.分类能添加成员变量吗？</strong><br>不能。只能通过关联对象(objc_setAssociatedObject)来模拟实现成员变量，但其实质是关联内容，所有对象的关联内容都放在同一个全局容器哈希表中:AssociationsHashMap,由AssociationsManager统一管理。</p>
+<h2 id="二、扩展"><a href="#二、扩展" class="headerlink" title="二、扩展"></a>二、扩展</h2><p><strong>1.一般用扩展做什么？</strong><br>声明私有属性，声明方法（没什么意义），声明私有成员变量</p>
+<p><strong>2.扩展的特点</strong><br>编译时决议，只能以声明的形式存在，多数情况下寄生在宿主类的.m中，不能为系统类添加扩展。</p>
+<h2 id="三、代理（Delegate）"><a href="#三、代理（Delegate）" class="headerlink" title="三、代理（Delegate）"></a>三、代理（Delegate）</h2><p><img src="01delegate.png" alt="IMG"><br>代理是一种设计模式，以@protocol形式体现，一般是一对一传递。<br>一般以weak关键词以规避循环引用。</p>
+<h2 id="四、通知（NSNotification）"><a href="#四、通知（NSNotification）" class="headerlink" title="四、通知（NSNotification）"></a>四、通知（NSNotification）</h2><p>使用观察者模式来实现的用于跨层传递信息的机制。传递方式是一对多的。</p>
+<p>如果实现通知机制？<br><img src="02notification.png" alt="img"></p>
+<p>##五、KVO (Key-value observing)<br>KVO是观察者模式的另一实现。<br>使用了isa混写(isa-swizzling)来实现KVO</p>
+<p><img src="03kvo.png" alt="IMG"><br>使用setter方法改变值KVO会生效，使用setValue:forKey即KVC改变值KVO也会生效，因为KVC会去调用setter方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)setValue:(id)value</span><br><span class="line">&#123;</span><br><span class="line">    [self willChangeValueForKey:@&quot;key&quot;];</span><br><span class="line">    </span><br><span class="line">    [super setValue:value];</span><br><span class="line">    </span><br><span class="line">    [self didChangeValueForKey:@&quot;key&quot;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么通过直接赋值成员变量会触发KVO吗？<br>不会，因为不会调用setter方法，需要加上willChangeValueForKey和didChangeValueForKey方法来手动触发才行</p>
+<h2 id="六、KVC-Key-value-coding"><a href="#六、KVC-Key-value-coding" class="headerlink" title="六、KVC(Key-value coding)"></a>六、KVC(Key-value coding)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-(id)valueForKey:(NSString *)key;</span><br><span class="line">-(void)setValue:(id)value forKey:(NSString *)key;</span><br></pre></td></tr></table></figure>
+
+<p>KVC就是指iOS的开发中，可以允许开发者通过Key名直接访问对象的属性，或者给对象的属性赋值。而不需要调用明确的存取方法。这样就可以在运行时动态地访问和修改对象的属性。而不是在编译时确定，这也是iOS开发中的黑魔法之一。很多高级的iOS开发技巧都是基于KVC实现的.  </p>
+<p><strong>当调用setValue：属性值 forKey：@”name“的代码时，，底层的执行机制如下：</strong></p>
+<ul>
+<li>程序优先调用set<Key>:属性值方法，代码通过setter方法完成设置。注意，这里的<key>是指成员变量名，首字母大小写要符合KVC的命名规则，下同</li>
+<li>如果没有找到setName：方法，KVC机制会检查+ (BOOL)accessInstanceVariablesDirectly方法有没有返回YES，默认该方法会返回YES，如果你重写了该方法让其返回NO的话，那么在这一步KVC会执行setValue：forUndefinedKey：方法，不过一般开发者不会这么做。所以KVC机制会搜索该类里面有没有名为<key>成员变量，无论该变量是在类接口处定义，还是在类实现处定义，也无论用了什么样的访问修饰符，只在存在以<key>命名的变量，KVC都可以对该成员变量赋值。</li>
+<li>如果该类即没有set<key>：方法，也没有_<key>成员变量，KVC机制会搜索_is<Key>的成员变量。</li>
+<li>和上面一样，如果该类即没有set<Key>：方法，也没有_<key>和_is<Key>成员变量，KVC机制再会继续搜索<key>和is<Key>的成员变量。再给它们赋值。</li>
+<li>如果上面列出的方法或者成员变量都不存在，系统将会执行该对象的setValue：forUndefinedKey：方法，默认是抛出异常。    </li>
+</ul>
+<p>即如果没有找到Set<Key>方法的话，会按照_key，_iskey，key，iskey的顺序搜索成员并进行赋值操作。<br>如果开发者想让这个类禁用KVC，那么重写+ (BOOL)accessInstanceVariablesDirectly方法让其返回NO即可，这样的话如果KVC没有找到set<Key>:属性名时，会直接用setValue：forUndefinedKey：方法。</p>
+<p><strong><em>当调用valueForKey：@”name“的代码时，KVC对key的搜索方式不同于setValue：属性值 forKey：@”name“，其搜索方式如下：</em></strong></p>
+<ul>
+<li>首先按get<Key>,<key>,is<Key>的顺序方法查找getter方法，找到的话会直接调用。如果是BOOL或者Int等值类型， 会将其包装成一个NSNumber对象。</li>
+<li>如果上面的getter没有找到，KVC则会查找countOf<Key>,objectIn<Key>AtIndex或<Key>AtIndexes格式的方法。如果countOf<Key>方法和另外两个方法中的一个被找到，那么就会返回一个可以响应NSArray所有方法的代理集合(它是NSKeyValueArray，是NSArray的子类)，调用这个代理集合的方法，或者说给这个代理集合发送属于NSArray的方法，就会以countOf<Key>,objectIn<Key>AtIndex或<Key>AtIndexes这几个方法组合的形式调用。还有一个可选的get<Key>:range:方法。所以你想重新定义KVC的一些功能，你可以添加这些方法，需要注意的是你的方法名要符合KVC的标准命名方法，包括方法签名。</li>
+<li>如果上面的方法没有找到，那么会同时查找countOf<Key>，enumeratorOf<Key>,memberOf<Key>格式的方法。如果这三个方法都找到，那么就返回一个可以响应NSSet所的方法的代理集合，和上面一样，给这个代理集合发NSSet的消息，就会以countOf<Key>，enumeratorOf<Key>,memberOf<Key>组合的形式调用。</li>
+<li>如果还没有找到，再检查类方法+ (BOOL)accessInstanceVariablesDirectly,如果返回YES(默认行为)，那么和先前的设值一样，会按_<key>,_is<Key>,<key>,is<Key>的顺序搜索成员变量名，这里不推荐这么做，因为这样直接访问实例变量破坏了封装性，使代码更脆弱。如果重写了类方法+ (BOOL)accessInstanceVariablesDirectly返回NO的话，那么会直接调用valueForUndefinedKey:方法，默认是抛出异常。</li>
+</ul>
+<h2 id="七、属性关键字"><a href="#七、属性关键字" class="headerlink" title="七、属性关键字"></a>七、属性关键字</h2><ol>
+<li>读写权限：readonly,readwrite(默认)</li>
+<li>原子性: atomic(默认)，nonatomic。atomic读写线程安全，但效率低，而且不是绝对的安全，比如如果修饰的是数组，那么对数组的读写是安全的，但如果是操作数组进行添加移除其中对象的还，就不保证安全了。</li>
+<li>引用计数：<ul>
+<li>retain/strong</li>
+<li>assign：修饰基本数据类型，修饰对象类型时，不改变其引用计数，会产生悬垂指针，修饰的对象在被释放后，assign指针仍然指向原对象内存地址，如果使用assign指针继续访问原对象的话，就可能会导致内存泄漏或程序异常</li>
+<li>weak：不改变被修饰对象的引用计数，所指对象在被释放后，weak指针会自动置为nil</li>
+<li>copy：分为深拷贝和浅拷贝</li>
+<li>浅拷贝：对内存地址的复制，让目标对象指针和原对象指向同一片内存空间会增加引用计数</li>
+<li>深拷贝：对对象内容的复制，开辟新的内存空间</li>
+</ul>
+</li>
+</ol>
+<p><img src="04copy.png" alt="img"><br>可变对象的copy和mutableCopy都是深拷贝<br>不可变对象的copy是浅拷贝，mutableCopy是深拷贝<br>copy方法返回的都是不可变对象<br>    - @property (nonatomic, copy) NSMutableArray * array;这样写有什么影响？<br>    因为copy方法返回的都是不可变对象，所以array对象实际上是不可变的，如果对其进行可变操作如添加移除对象，则会造成程序crash</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/06/05/iOS%E5%BC%80%E5%8F%91Objective-C%E6%80%BB%E7%BB%93/" data-id="cktauybbi002kvguccax0crvt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Objective-C/" rel="tag">Objective-C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发Swift总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/27/iOS%E5%BC%80%E5%8F%91Swift%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-05-27T08:58:11.000Z" itemprop="datePublished">2019-05-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/27/iOS%E5%BC%80%E5%8F%91Swift%E6%80%BB%E7%BB%93/">iOS开发Swift总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Safe-amp-Fast"><a href="#Safe-amp-Fast" class="headerlink" title="Safe &amp; Fast"></a>Safe &amp; Fast</h2><h3 id="1、能用let，尽量别用var。"><a href="#1、能用let，尽量别用var。" class="headerlink" title="1、能用let，尽量别用var。"></a>1、能用let，尽量别用var。</h3><p><del>~ 把代码中的var都改成let，只保留编译不能通过的。 ~</del></p>
+<p>Object-C的Foundation层，都是继承<code>NSObject</code>实现的，平时都在操作指针，所以要区分Mutable和imutable，比如NSString和NSMutableString。<br>Swift使用let和var关键字用于用于区分是否可变。可变会更容易出错，所以尽可能使用比可变设计，等到需要改变再改成var。</p>
+<h3 id="2-尽量不用“-”"><a href="#2-尽量不用“-”" class="headerlink" title="2.尽量不用“!”"></a>2.尽量不用“!”</h3><p>“!”遇到nil时，会crash(包括 as!进行强制转换)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/05/27/iOS%E5%BC%80%E5%8F%91Swift%E6%80%BB%E7%BB%93/" data-id="cktauybbl002rvguche5vh409" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swift/" rel="tag">Swift</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发中使用Block总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-04-06T02:36:17.000Z" itemprop="datePublished">2019-04-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/">iOS开发中使用Block总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###Block的本质</p>
+<ul>
+<li>将 “函数” 及 “执行其上下文” 封装起来的 “对象”</li>
+<li>block的调用就是函数的调用</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> (^add)(<span class="keyword">int</span> a,<span class="keyword">int</span> b) = ^(<span class="keyword">int</span> a,<span class="keyword">int</span> b)&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;;</span><br><span class="line">    NSLog(@<span class="string">"%d"</span>,add(<span class="number">10</span>,<span class="number">20</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 “clang -rewrite-objc main.m”查看编译之后的部分内容</p>
+<p><img src="01.png" alt="block1"></p>
+<p>__block_impl 结构体中发现有 isa 指针，所以说block是Objective-C对象</p>
+<p>###block捕获变量特性</p>
+<p>在block中使用外部变量时，block会捕获其变量，具体规则如下</p>
+<ul>
+<li>局部变量为基本数据类型：捕获其值</li>
+<li>局部变量为对象类型：连同所有权修饰符一起捕获</li>
+<li>局部变量为静态的：以指针的形式捕获</li>
+<li>全局变量：不捕获</li>
+<li>全局静态变量：不捕获</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> testGlobalVar = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> testGlobalStaticVar = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> testVar = <span class="number">0</span>;</span><br><span class="line">    __strong id obj = [[NSObject alloc]init];</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> testStaticVar = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span>(^test)(<span class="keyword">void</span>) = ^()&#123;</span><br><span class="line">        NSLog(@<span class="string">"局部变量为基本数据类型%d"</span>,testVar);</span><br><span class="line">        NSLog(@<span class="string">"局部变量为对象类型%@"</span>,obj);</span><br><span class="line">        NSLog(@<span class="string">"局部变量为静态的%d"</span>,testStaticVar);</span><br><span class="line">        NSLog(@<span class="string">"全局变量%d"</span>,testGlobalVar);</span><br><span class="line">        NSLog(@<span class="string">"全局静态变量%d"</span>,testGlobalStaticVar);</span><br><span class="line">    &#125;;</span><br><span class="line">    test();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后看到效果</p>
+<p><img src="02.png" alt="02"></p>
+<p>将上述代码编译后，我们再看<strong>main_block_impl_0结构体中这几个变量在其中的类型，就可以更好理解block的捕获特性，</strong>strong为默认修饰符，所有编译后无效果。</p>
+<p>由于捕获的特性，当我们在block中使用对象类型时，需要注意循环引用</p>
+<p>__block</p>
+<p>使用场景：在blcok内部对捕获的值进行赋值</p>
+<ul>
+<li>局部变量为基本数据类型、对象类型，需要__block</li>
+<li>静态局部变量、全局变量、全局静态变量，不需要__block，因为静态局部变量不捕获其指针，全局变量、全局静态变量不捕获</li>
+</ul>
+<p><img src="04.png" alt="04"><br><img src="05.png" alt="05"></p>
+<p>如图，编译后的文件，我们发现，局部数据类型变量a、局部对象类型obj竟然变成了结构体实例</p>
+<p><strong>Block_byref_a_0结构体实例的成员变量</strong>forwarding持有指向该实例自身的指针</p>
+<p>###Block内存管理</p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>对应对象的存储域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_NSConcreteStackBlock</td>
+<td>栈</td>
+</tr>
+<tr>
+<td>_NSConcreteGlobalBlock</td>
+<td>数据区域(.data区)</td>
+</tr>
+<tr>
+<td>_NSConcreteMallocBlock</td>
+<td>堆</td>
+</tr>
+</tbody></table>
+<p>通过几个栗子来分析内存管理：</p>
+<p>栗子1：block不捕获任何外部变量，分配在全局区</p>
+<p><img src="06.png" alt="06"></p>
+<p>栗子2：block捕获局部变量，分配在堆区<br><img src="07.png" alt="07"><br>栗子3：block捕获局部静态变量，分配在全局区<br><img src="08.png" alt="08"><br>栗子4：block捕获全局变量，分配在全局区<br><img src="09.png" alt="09"><br>栗子5：block捕获全局静态变量，分配在全局区<br><img src="10.png" alt="10"><br>5个栗子，blcok不是分配在堆区，就是分配在全局区，什么时候分配在栈区呢？</p>
+<p><img src="11.png" alt="11"><br>截取官方文档的一个图，可以发现，当发送copy消息的时候，会将block分配在堆区，但是我们并没有发任何copy消息呀，why？因为系统已经偷偷给我们发送了copy消息<br>怎么不让系统帮我们呢？<br>栗子6：__weak 修饰block<br><img src="12.png" alt="12"></p>
+<p>用好类型别名<br>为常用的 block 类型创建 typedef<br>用 typedef 重新定义block类型，可以使 block 变量用起来更加简单</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span><span class="params">(^Add)</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    Add add = ^(<span class="keyword">int</span> a,<span class="keyword">int</span> b)&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;;</span><br><span class="line">    NSLog(@<span class="string">"%d"</span>,add(<span class="number">10</span>,<span class="number">20</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/" data-id="cktauybbm002wvguc6u1wc7pt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发UI总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-03-29T02:42:19.000Z" itemprop="datePublished">2019-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/">iOS开发UI总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="UI相关的几个要点"><a href="#UI相关的几个要点" class="headerlink" title="UI相关的几个要点"></a>UI相关的几个要点</h1><ul>
+<li>UIView &amp; CALayer</li>
+<li>事件传递和视图响应链</li>
+<li>图像显示原理</li>
+<li>UI卡顿掉帧原理</li>
+<li>滑动优化方案</li>
+<li>离屏渲染</li>
+</ul>
+<h2 id="UIView-amp-CALayer"><a href="#UIView-amp-CALayer" class="headerlink" title="UIView &amp; CALayer"></a>UIView &amp; CALayer</h2><p>UIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状层级结构，layer 内部有 SubLayers，View 内部有 SubViews。但是 Layer 比 View 多了个AnchorPoint。UIView可以通过CALayer可以实现 <strong>阴影，圆角，带颜色的边框、3D变换、非矩形规范、透明遮照、多级非线性动画</strong>等。</p>
+<p>他们的区别是：</p>
+<ul>
+<li>与UIView最大的不同就是CALyer不处理用户的交互,不清楚具体的响应链；</li>
+<li>二者并无继承关系，CALyer是UIView显示内容的内部实现；</li>
+<li>UIView是对CALayer的一个封装，并提供了一些显示控制和响应链的功能；</li>
+</ul>
+<p>这样的设计体现了单一职责原则：UIView为CALayer提供内容，以及负责处理触摸等事件，参与响应链；CALayer负责显示内容contents。</p>
+<p>##事件传递 &amp; 视图响应链</p>
+<p>两个UIView方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;空间是否响事件测试</span><br><span class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;</span><br><span class="line">&#x2F;&#x2F;判断点位位置是否在区域内</span><br><span class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
+
+<p>事件传递顺序</p>
+<p><img src="02event.png" alt="png"></p>
+<p>通过代码体现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 此方法就是寻找最为合适的响应的控件</span><br><span class="line">   override func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView? &#123;</span><br><span class="line">    </span><br><span class="line">       super.hitTest(point, with: event);</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 1 UIView不接收触摸事件的三种情况：       </span><br><span class="line">       if self.isUserInteractionEnabled &#x3D;&#x3D; false || self.alpha &lt;&#x3D; 0.1 || self.isHidden &#x3D;&#x3D; true &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F;  2 判断当前的点是否在此控件上面</span><br><span class="line">       if self.point(inside: point, with: event) &#x3D;&#x3D; false &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 3 以上条件都满足 去遍历自己的子空间</span><br><span class="line">       for view in self.subviews &#123;</span><br><span class="line">           </span><br><span class="line">           &#x2F;&#x2F; 转为目标控件的点</span><br><span class="line">           let current_point &#x3D; self.convert(point, to: view);</span><br><span class="line">           &#x2F;&#x2F; 让子视图再去遍历 如果有的话 进行返回操作 没有的话 不要紧 返回nil就好了</span><br><span class="line">           if view.hitTest(current_point, with: event) !&#x3D; nil &#123;</span><br><span class="line">               return view;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 4 如果以上都没有找到 那就返回自己</span><br><span class="line">       return self;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用逻辑<br><img src="03action.png" alt="png"></p>
+<h2 id="图像显示原理"><a href="#图像显示原理" class="headerlink" title="图像显示原理"></a>图像显示原理</h2><p>cpu和GPU关系<br><img src="04cpu.png" alt="png"></p>
+<p>1.CPU:输出位图<br>2.GPU :图层渲染，纹理合成<br>3.把结果放到帧缓冲区(frame buffer)中<br>4.再由视频控制器根据vsync信号在指定时间之前去提取帧缓冲区的屏幕显示内容<br>5.显示到屏幕上</p>
+<p>cpu和gpu的显示中的分工<br><img src="05gpu.png" alt="png"></p>
+<p>CPU工作<br>1.Layout: UI布局，文本计算<br>2.Display: 绘制<br>3.Prepare: 图片解码<br>4.Commit：提交位图</p>
+<p>GPU渲染管线(OpenGL)<br>顶点着色，图元装配，光栅化，片段着色，片段处理</p>
+<p>##UI卡顿掉帧的原因<br><img src="06kadun.png" alt="png"></p>
+<p>iOS设备的硬件时钟会发出Vsync（垂直同步信号），然后App的CPU会去计算屏幕要显示的内容，之后将计算好的内容提交到GPU去渲染。随后，GPU将渲染结果提交到帧缓冲区，等到下一个VSync到来时将缓冲区的帧显示到屏幕上。也就是说，一帧的显示是由CPU和GPU共同决定的。</p>
+<p>一般来说，页面滑动流畅是60fps，也就是1s有60帧更新，即每隔16.7ms就要产生一帧画面，而如果CPU和GPU加起来的处理时间超过了16.7ms，就会造成掉帧甚至卡顿。</p>
+<p>##滑动优化方案<br>CPU：把以下操作放在子线程中<br>1.对象创建、调整、销毁<br>2.预排版（布局计算、文本计算、缓存高度等等）<br>3.预渲染（文本等异步绘制，图片解码等）</p>
+<p>GPU:<br>纹理渲染，视图混合</p>
+<p>一般遇到性能问题时，考虑以下问题：<br>是否受到CPU或者GPU的限制？<br>是否有不必要的CPU渲染？<br>是否有太多的离屏渲染操作？<br>是否有太多的图层混合操作？<br>是否有奇怪的图片格式或者尺寸？<br>是否涉及到昂贵的view或者效果？<br>view的层次结构是否合理？  </p>
+<h2 id="UI绘制原理"><a href="#UI绘制原理" class="headerlink" title="UI绘制原理"></a>UI绘制原理</h2><p><img src="07display.png" alt="png"></p>
+<p>异步绘制：<br><strong>[self.layer.delegate displayLayer: ]</strong><br>代理负责生成对应的bitmap,<br>设置该bitmap作为该layer.contents属性的值</p>
+<p><img src="08yibuhuizhi.png" alt="png"></p>
+<h2 id="离屏渲染"><a href="#离屏渲染" class="headerlink" title="离屏渲染"></a>离屏渲染</h2><p>On-Screen Rendering:当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行<br>Off-Screen Rendering:离屏渲染，分为CPU离屏渲染和GPU离屏渲染两种形式。GPU离屏渲染指的是GPU在当前屏幕缓冲区外新开辟一个缓冲区进行渲染操作<br>应当尽量避免的则是GPU离屏渲染</p>
+<p>GPU离屏渲染何时会触发呢？<br>圆角（当和maskToBounds一起使用时）、图层蒙版、阴影，设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.shouldRasterize ＝ YES</span><br></pre></td></tr></table></figure>
+
+<p><em>为什么要避免GPU离屏渲染？</em></p>
+<p>GPU需要做额外的渲染操作。通常GPU在做渲染的时候是很快的，但是涉及到offscreen-render的时候情况就可能有些不同，因为需要额外开辟一个新的缓冲区进行渲染，然后绘制到当前屏幕的过程需要做onscreen跟offscreen上下文之间的切换，这个过程的消耗会比较昂贵，涉及到OpenGL的pipeline跟barrier，而且offscreen-render在每一帧都会涉及到，因此处理不当肯定会对性能产生一定的影响。另外由于离屏渲染会增加GPU的工作量，可能会导致CPU+GPU的处理时间超出16.7ms，导致掉帧卡顿。所以可以的话应尽量减少offscreen-render的图层</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/" data-id="cktauybbx0040vgucau39gin2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UI/" rel="tag">UI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发中RunTime总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-03-29T02:39:12.000Z" itemprop="datePublished">2019-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/">iOS开发中RunTime总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#runtime相关</p>
+<ul>
+<li>数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t</li>
+<li>对象、类对象、元类对象</li>
+<li>消息传递、消息转发</li>
+</ul>
+<h3 id="一、数据结构：NSObject、objc-object、objc-class、isa、class-data-bits-t、cache-t、method-t"><a href="#一、数据结构：NSObject、objc-object、objc-class、isa、class-data-bits-t、cache-t、method-t" class="headerlink" title="一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t"></a>一、数据结构：NSObject、objc_object、objc_class、isa、class_data_bits_t、cache_t、method_t</h3><p><img src="object_struct.png" alt="img"></p>
+<ul>
+<li>NSObject<br>在OC中，基本上所有的类的基类，都是NSObject。因此要深入了解OC中的类的结构，就要从NSObject这个类说起。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@interface NSObject &lt;NSObject&gt; &#123;</span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NSObject仅有一个实例变量Class isa：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents an Objective-C class.</span><br><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Class实质上是指向objc_class的指针。而objc_class的定义：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct objc_class : objc_object &#123;</span><br><span class="line">    &#x2F;&#x2F; Class ISA;</span><br><span class="line">    Class superclass;</span><br><span class="line">    cache_t cache;             &#x2F;&#x2F; formerly cache pointer and vtable</span><br><span class="line">    class_data_bits_t bits;    &#x2F;&#x2F; class_rw_t * plus custom rr&#x2F;alloc flags</span><br><span class="line"></span><br><span class="line">    class_rw_t *data() &#123; </span><br><span class="line">        return bits.data();</span><br><span class="line">    &#125;</span><br><span class="line">    void setData(class_rw_t *newData) &#123;</span><br><span class="line">        bits.setData(newData);</span><br><span class="line">    &#125;</span><br><span class="line">    。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，objc_class继承自objc_object；在objc_class中，有三个数据成员：superclass 、cache、bits。</p>
+<ul>
+<li><p>Class superclass ：同样是Class类型，表明当前类的父类。</p>
+</li>
+<li><p>cache_t cache ：用于快速查找方法执行函数，可增量扩展的哈希表结构，是局部性原理的最佳运用。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">struct cache_t &#123;</span><br><span class="line">    struct bucket_t *_buckets;&#x2F;&#x2F;一个散列表，用来方法缓存，bucket_t类型，包含key以及方法实现IMP</span><br><span class="line">    mask_t _mask;&#x2F;&#x2F;分配用来缓存bucket的总数</span><br><span class="line">    mask_t _occupied;&#x2F;&#x2F;表明目前实际占用的缓存bucket的个数</span><br><span class="line">｝</span><br><span class="line">struct bucket_t &#123;</span><br><span class="line">    private:</span><br><span class="line">    cache_key_t _key;</span><br><span class="line">    IMP _imp;</span><br><span class="line"> ｝</span><br></pre></td></tr></table></figure>
+
+<p>runtime当要调用一个方法时，先不去Class的方法列表中查找，而是先去找cache_t cache 。当系统调用过一个方法后，会将其实现IMP和key存放到cache中，因为理论上一个方法调用过后，被再次调用的概率很大。</p>
+<ul>
+<li>class_data_bits_t bits：这是Class的核心，其本质是一个可以被Mask的指针类型。根据不同的Mask，可以取出不同的值。可以看做对class_rw_t的封装。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">struct class_data_bits_t &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Values are the FAST_ flags above.</span><br><span class="line">    uintptr_t bits;</span><br><span class="line"> </span><br><span class="line">    public:</span><br><span class="line">    class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br><span class="line">    void setData(class_rw_t *newData)</span><br><span class="line">    &#123;</span><br><span class="line">        assert(!data()  ||  (newData-&gt;flags &amp; (RW_REALIZING | RW_FUTURE)));</span><br><span class="line">        &#x2F;&#x2F; Set during realization or construction only. No locking needed.</span><br><span class="line">        &#x2F;&#x2F; Use a store-release fence because there may be concurrent</span><br><span class="line">        &#x2F;&#x2F; readers of data and data&#39;s contents.</span><br><span class="line">        uintptr_t newBits &#x3D; (bits &amp; ~FAST_DATA_MASK) | (uintptr_t)newData;</span><br><span class="line">        atomic_thread_fence(memory_order_release);</span><br><span class="line">        bits &#x3D; newBits;</span><br><span class="line">    &#125;</span><br><span class="line">    。。。</span><br></pre></td></tr></table></figure>
+
+<p>class_data_bits_t bits 仅含有一个成员uintptr_t bits， 可以理解为一个‘复合指针’。什么意思呢，就是bits不仅包含了指针，同时包含了Class的各种异或flag，来说明Class的属性。把这些信息复合在一起，仅用一个uint指针bits来表示。当需要取出这些信息时，需要用对应的以FAST_ 前缀开头的flag掩码对bits做按位与操作。</p>
+<p>例如，我们需要取出Classs的核心信息class_rw_t, 则需要调用方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>class_rw_t：Class的核心结构</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct class_rw_t &#123;</span><br><span class="line">     uint32_t flags;</span><br><span class="line">     uint32_t version;</span><br><span class="line"></span><br><span class="line">     const class_ro_t *ro;</span><br><span class="line"></span><br><span class="line">     method_array_t methods;</span><br><span class="line">     property_array_t properties;</span><br><span class="line">     protocol_array_t protocols;</span><br><span class="line"></span><br><span class="line">     Class firstSubclass;</span><br><span class="line">     Class nextSiblingClass;</span><br><span class="line"></span><br><span class="line">     char *demangledName;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+
+<p>Objc的类的属性、方法、以及遵循的协议都放在class_rw_t中，class_rw_t代表了类相关的读写信息，是对class_ro_t的封装，而class_ro_t代表了类的只读信息，存储了 编译器决定了的属性、方法和遵守协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">struct class_ro_t &#123;</span><br><span class="line">    uint32_t flags;</span><br><span class="line">    uint32_t instanceStart;</span><br><span class="line">    uint32_t instanceSize;</span><br><span class="line">    #ifdef __LP64__</span><br><span class="line">    uint32_t reserved;</span><br><span class="line">    #endif</span><br><span class="line"></span><br><span class="line">    const uint8_t * ivarLayout;</span><br><span class="line">    </span><br><span class="line">    const char * name;</span><br><span class="line">    method_list_t * baseMethodList;</span><br><span class="line">    protocol_list_t * baseProtocols;</span><br><span class="line">    const ivar_list_t * ivars;</span><br><span class="line"></span><br><span class="line">    const uint8_t * weakIvarLayout;</span><br><span class="line">    property_list_t *baseProperties;</span><br><span class="line"></span><br><span class="line">    method_list_t *baseMethods() const &#123;</span><br><span class="line">        return baseMethodList;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>objc_object（id）</li>
+</ul>
+<p>OC的底层实现是runtime，在runtime这一层，对象被定义为objc_object 结构体，类被定义为了objc_class 结构体。而objc_class 继承于objc_object， 因此，类可以看做是一类特殊的对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">private:</span><br><span class="line">    isa_t isa;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; ISA() assumes this is NOT a tagged pointer object</span><br><span class="line">    Class ISA();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; getIsa() allows this to be a tagged pointer object</span><br><span class="line">    Class getIsa();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 省略其余方法</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>objc_object的定义很简单，仅包含一个isa_t类型 isa,有关于isa操作相关，弱引用相关，关联对象相关，内存关联相关。</p>
+<ul>
+<li>isa指针，共用体isa_t</li>
+</ul>
+<p>isa关于对象，其指向类对象。<br>关于类对象，其指向元类对象。<br>实例-(isa)-&gt;class-(isa)-&gt;MetaClass    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">union isa_t </span><br><span class="line">&#123;</span><br><span class="line">    isa_t() &#123; &#125;</span><br><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span><br><span class="line"></span><br><span class="line">    Class cls;</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 省略其余</span><br><span class="line">    。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="02isa.png" alt="img"></p>
+<ul>
+<li>method_t</li>
+</ul>
+<p>函数四要素：名称、返回值、参数、函数体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct method_t &#123;</span><br><span class="line">  SEL name;           &#x2F;&#x2F;名称</span><br><span class="line">  const char *types;&#x2F;&#x2F;返回值和参数</span><br><span class="line">  IMP imp;              &#x2F;&#x2F;函数体</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、对象、类对象、元类对象"><a href="#二、对象、类对象、元类对象" class="headerlink" title="二、对象、类对象、元类对象"></a>二、对象、类对象、元类对象</h3><ul>
+<li>类对象存储实例方法列表等信息；</li>
+<li>元类对象存储类方法列表等信息；</li>
+</ul>
+<p><img src="03class.png" alt="img"></p>
+<p>superClass是一层层集成的，到最后NSObject的superClass是nil。而NSObject的isa指向根元类，这个根元类的isa指向他自己，而他的superClass是NSObject，也就是最后形成一个环。</p>
+<h3 id="三、消息传递"><a href="#三、消息传递" class="headerlink" title="三、消息传递"></a>三、消息传递</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void objc_msgSend(void &#x2F;* id self, SEL op, ... *&#x2F; )</span><br><span class="line"></span><br><span class="line">void objc_msgSendSuper(void &#x2F;* struct objc_super *super, SEL op, ... *&#x2F; )</span><br><span class="line"></span><br><span class="line">struct objc_super &#123;</span><br><span class="line">    &#x2F;&#x2F;&#x2F; Specifies an instance of a class.</span><br><span class="line">    __unsafe_unretained _Nonnull id receiver;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;&#x2F; Specifies the particular superclass of the instance to message. </span><br><span class="line">#if !defined(__cplusplus)  &amp;&amp;  !__OBJC2__</span><br><span class="line">    &#x2F;* For compatibility with old objc-runtime.h header *&#x2F;</span><br><span class="line">    __unsafe_unretained _Nonnull Class class;</span><br><span class="line">#else</span><br><span class="line">    __unsafe_unretained _Nonnull Class super_class;</span><br><span class="line">#endif</span><br><span class="line">    &#x2F;* super_class is the first class to search *&#x2F;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>消息传递的流程：缓存查找–&gt;当前类查找–&gt;父类逐级查找</p>
+<ul>
+<li><p>调用方法之前，先去查找缓存，看看缓存中是否有对应选择器的方法实现，如果有，就去调用函数，完成消息传递（缓存查找：给定值SEL,目标是查找对应bucket_t中的IMP，哈希查找）</p>
+</li>
+<li><p>如果缓存中没有，会根据当前实例的isa指针查找当前类对象的方法列表，看看是否有同样名称的方法 ，如果找到，就去调用函数，完成消息传递（当前类中查找：对于已排序好的方法列表，采用二分查找，对于没有排序好的列表，采用一般遍历）</p>
+</li>
+<li><p>如果当前类对象的方法列表没有，就会逐级父类方法列表中查找，如果找到，就去调用函数，完成消息传递（父类逐级查找：先判断父类是否为nil，为nil则结束，否则就继续进行缓存查找–&gt;当前类查找–&gt;父类逐级查找的流程）</p>
+</li>
+<li><p>如果一直查到根类依然没有查找到，则进入到消息转发流程中，完成消息传递</p>
+</li>
+</ul>
+<h3 id="四、消息转发"><a href="#四、消息转发" class="headerlink" title="四、消息转发"></a>四、消息转发</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel;&#x2F;&#x2F;为对象方法进行决议</span><br><span class="line">+ (BOOL)resolveClassMethod:(SEL)sel;&#x2F;&#x2F;为类方法进行决议</span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector;&#x2F;&#x2F;方法转发目标</span><br><span class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;</span><br><span class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation;</span><br></pre></td></tr></table></figure>
+<p><img src="04message.png" alt="img"></p>
+<p>那么最后消息未能处理的时候，还会调用到</p>
+<ul>
+<li><p>(void)doesNotRecognizeSelector:(SEL)aSelector这个方法，我们也可以在这个方法中做处理，避免掉crash，但是只建议在线上环境的时候做处理，实际开发过程中还要把异常抛出来</p>
+</li>
+<li><p>方法交换(Method-Swizzling)</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  + (void)load</span><br><span class="line">&#123;</span><br><span class="line">    Method test &#x3D; class_getInstanceMethod(self, @selector(test));</span><br><span class="line"></span><br><span class="line">    Method otherTest &#x3D; class_getInstanceMethod(self, @selector(otherTest));</span><br><span class="line"></span><br><span class="line">    method_exchangeImplementations(test, otherTest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：替换系统的方法，比如viewDidLoad，viewWillAppear以及一些响应方法，来进行统计信息</p>
+<ul>
+<li>动态添加方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class_addMethod(self, sel, testImp, &quot;v@:&quot;);</span><br><span class="line"></span><br><span class="line">void testImp (void)</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;testImp&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@dynamic 动态方法解析</li>
+</ul>
+<p>动态运行时语言将函数决议推迟到运行时<br>编译时语言在编译期进行函数决议</p>
+<ul>
+<li>[obj foo]和objc_msgSend()函数之间有什么关系？</li>
+</ul>
+<p>objc_msgSend()是[obj foo]的具体实现。在runtime中，objc_msgSend()是一个c函数，[obj foo]会被翻译成这样的形式objc_msgSend(obj, foo)。</p>
+<ul>
+<li>runtime是如何通过selector找到对应的IMP地址的？</li>
+</ul>
+<p>缓存查找–&gt;当前类查找–&gt;父类逐级查找</p>
+<ul>
+<li>能否向编译后的类中增加实例变量？</li>
+</ul>
+<p>不能。 编译后，该类已经完成了实例变量的布局，不能再增加实例变量。<br>但可以向动态添加的类中增加实例变量。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/" data-id="cktauybbq003cvguc3nt37vnp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RunTime/" rel="tag">RunTime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发中内存管理总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-03-29T02:38:26.000Z" itemprop="datePublished">2019-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/">iOS开发中内存管理总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/" data-id="cktauybbn002zvgucfo4rg14i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS网络编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/15/iOS%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" class="article-date">
+  <time datetime="2019-03-15T02:31:45.000Z" itemprop="datePublished">2019-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/15/iOS%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">iOS网络编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/03/15/iOS%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" data-id="cktauybbp0037vgucagete8nf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/4/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &amp;raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/Nacos/">Nacos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/mysql/">mysql</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/">JAVA</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/JVM/">JVM</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/docker/redis/">redis</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/flutter/">flutter</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Objective-C/">Objective-C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Xcode/">Xcode</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vue/">vue</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BUG/" rel="tag">BUG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/" rel="tag">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Objective-C/" rel="tag">Objective-C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunTime/" rel="tag">RunTime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swift/" rel="tag">Swift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI/" rel="tag">UI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hook/" rel="tag">hook</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" rel="tag">iOS真机运行</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysl/" rel="tag">mysl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/volatile/" rel="tag">volatile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" rel="tag">学习计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%83%A8%E7%BD%B2/" rel="tag">部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BUG/" style="font-size: 10px;">BUG</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Objective-C/" style="font-size: 16.67px;">Objective-C</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/UI/" style="font-size: 13.33px;">UI</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/flutter/" style="font-size: 13.33px;">flutter</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hook/" style="font-size: 10px;">hook</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 10px;">iOS真机运行</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mysl/" style="font-size: 10px;">mysl</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/volatile/" style="font-size: 10px;">volatile</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 10px;">优化</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">多线程</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 10px;">学习计划</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">并发编程</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 10px;">部署</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/">JVM 逃逸分析优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/">Nacos通过Docke部署</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85redis/">Docker安装redis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85mysql5-7/">Docker安装mysql5.7</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/30/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-volatile%E5%85%B3%E9%94%AE%E5%AD%97%E7%90%86%E8%A7%A3/">Java并发编程-volatile关键字理解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 jmme@foxmail.com<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

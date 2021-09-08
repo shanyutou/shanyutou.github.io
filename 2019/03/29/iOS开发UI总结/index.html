@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>iOS开发UI总结 | 山芋头</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="UI相关的几个要点 UIView &amp; CALayer 事件传递和视图响应链 图像显示原理 UI卡顿掉帧原理 滑动优化方案 离屏渲染  UIView &amp; CALayerUIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发UI总结">
+<meta property="og:url" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="UI相关的几个要点 UIView &amp; CALayer 事件传递和视图响应链 图像显示原理 UI卡顿掉帧原理 滑动优化方案 离屏渲染  UIView &amp; CALayerUIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/02event.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/03action.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/04cpu.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/05gpu.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/06kadun.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/07display.png">
+<meta property="og:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/08yibuhuizhi.png">
+<meta property="article:published_time" content="2019-03-29T02:42:19.000Z">
+<meta property="article:modified_time" content="2020-07-28T05:41:08.593Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="UI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/02event.png">
+  
+    <link rel="alternate" href="/atom.xml" title="山芋头" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">山芋头</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">记录和分享能创造价值</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://shanyutou.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS开发UI总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2019-03-29T02:42:19.000Z" itemprop="datePublished">2019-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS开发UI总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="UI相关的几个要点"><a href="#UI相关的几个要点" class="headerlink" title="UI相关的几个要点"></a>UI相关的几个要点</h1><ul>
+<li>UIView &amp; CALayer</li>
+<li>事件传递和视图响应链</li>
+<li>图像显示原理</li>
+<li>UI卡顿掉帧原理</li>
+<li>滑动优化方案</li>
+<li>离屏渲染</li>
+</ul>
+<h2 id="UIView-amp-CALayer"><a href="#UIView-amp-CALayer" class="headerlink" title="UIView &amp; CALayer"></a>UIView &amp; CALayer</h2><p>UIView不用介绍，CALayer类在概念上和UIView类似，每个 UIView 内部都有一个 CALayer 在背后提供内容的绘制和显示，并且 UIView 的尺寸样式都由内部的 Layer 所提供。两者都有树状层级结构，layer 内部有 SubLayers，View 内部有 SubViews。但是 Layer 比 View 多了个AnchorPoint。UIView可以通过CALayer可以实现 <strong>阴影，圆角，带颜色的边框、3D变换、非矩形规范、透明遮照、多级非线性动画</strong>等。</p>
+<p>他们的区别是：</p>
+<ul>
+<li>与UIView最大的不同就是CALyer不处理用户的交互,不清楚具体的响应链；</li>
+<li>二者并无继承关系，CALyer是UIView显示内容的内部实现；</li>
+<li>UIView是对CALayer的一个封装，并提供了一些显示控制和响应链的功能；</li>
+</ul>
+<p>这样的设计体现了单一职责原则：UIView为CALayer提供内容，以及负责处理触摸等事件，参与响应链；CALayer负责显示内容contents。</p>
+<p>##事件传递 &amp; 视图响应链</p>
+<p>两个UIView方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;空间是否响事件测试</span><br><span class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;</span><br><span class="line">&#x2F;&#x2F;判断点位位置是否在区域内</span><br><span class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
+
+<p>事件传递顺序</p>
+<p><img src="02event.png" alt="png"></p>
+<p>通过代码体现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 此方法就是寻找最为合适的响应的控件</span><br><span class="line">   override func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView? &#123;</span><br><span class="line">    </span><br><span class="line">       super.hitTest(point, with: event);</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 1 UIView不接收触摸事件的三种情况：       </span><br><span class="line">       if self.isUserInteractionEnabled &#x3D;&#x3D; false || self.alpha &lt;&#x3D; 0.1 || self.isHidden &#x3D;&#x3D; true &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F;  2 判断当前的点是否在此控件上面</span><br><span class="line">       if self.point(inside: point, with: event) &#x3D;&#x3D; false &#123;</span><br><span class="line">           return nil;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 3 以上条件都满足 去遍历自己的子空间</span><br><span class="line">       for view in self.subviews &#123;</span><br><span class="line">           </span><br><span class="line">           &#x2F;&#x2F; 转为目标控件的点</span><br><span class="line">           let current_point &#x3D; self.convert(point, to: view);</span><br><span class="line">           &#x2F;&#x2F; 让子视图再去遍历 如果有的话 进行返回操作 没有的话 不要紧 返回nil就好了</span><br><span class="line">           if view.hitTest(current_point, with: event) !&#x3D; nil &#123;</span><br><span class="line">               return view;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F; 4 如果以上都没有找到 那就返回自己</span><br><span class="line">       return self;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用逻辑<br><img src="03action.png" alt="png"></p>
+<h2 id="图像显示原理"><a href="#图像显示原理" class="headerlink" title="图像显示原理"></a>图像显示原理</h2><p>cpu和GPU关系<br><img src="04cpu.png" alt="png"></p>
+<p>1.CPU:输出位图<br>2.GPU :图层渲染，纹理合成<br>3.把结果放到帧缓冲区(frame buffer)中<br>4.再由视频控制器根据vsync信号在指定时间之前去提取帧缓冲区的屏幕显示内容<br>5.显示到屏幕上</p>
+<p>cpu和gpu的显示中的分工<br><img src="05gpu.png" alt="png"></p>
+<p>CPU工作<br>1.Layout: UI布局，文本计算<br>2.Display: 绘制<br>3.Prepare: 图片解码<br>4.Commit：提交位图</p>
+<p>GPU渲染管线(OpenGL)<br>顶点着色，图元装配，光栅化，片段着色，片段处理</p>
+<p>##UI卡顿掉帧的原因<br><img src="06kadun.png" alt="png"></p>
+<p>iOS设备的硬件时钟会发出Vsync（垂直同步信号），然后App的CPU会去计算屏幕要显示的内容，之后将计算好的内容提交到GPU去渲染。随后，GPU将渲染结果提交到帧缓冲区，等到下一个VSync到来时将缓冲区的帧显示到屏幕上。也就是说，一帧的显示是由CPU和GPU共同决定的。</p>
+<p>一般来说，页面滑动流畅是60fps，也就是1s有60帧更新，即每隔16.7ms就要产生一帧画面，而如果CPU和GPU加起来的处理时间超过了16.7ms，就会造成掉帧甚至卡顿。</p>
+<p>##滑动优化方案<br>CPU：把以下操作放在子线程中<br>1.对象创建、调整、销毁<br>2.预排版（布局计算、文本计算、缓存高度等等）<br>3.预渲染（文本等异步绘制，图片解码等）</p>
+<p>GPU:<br>纹理渲染，视图混合</p>
+<p>一般遇到性能问题时，考虑以下问题：<br>是否受到CPU或者GPU的限制？<br>是否有不必要的CPU渲染？<br>是否有太多的离屏渲染操作？<br>是否有太多的图层混合操作？<br>是否有奇怪的图片格式或者尺寸？<br>是否涉及到昂贵的view或者效果？<br>view的层次结构是否合理？  </p>
+<h2 id="UI绘制原理"><a href="#UI绘制原理" class="headerlink" title="UI绘制原理"></a>UI绘制原理</h2><p><img src="07display.png" alt="png"></p>
+<p>异步绘制：<br><strong>[self.layer.delegate displayLayer: ]</strong><br>代理负责生成对应的bitmap,<br>设置该bitmap作为该layer.contents属性的值</p>
+<p><img src="08yibuhuizhi.png" alt="png"></p>
+<h2 id="离屏渲染"><a href="#离屏渲染" class="headerlink" title="离屏渲染"></a>离屏渲染</h2><p>On-Screen Rendering:当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行<br>Off-Screen Rendering:离屏渲染，分为CPU离屏渲染和GPU离屏渲染两种形式。GPU离屏渲染指的是GPU在当前屏幕缓冲区外新开辟一个缓冲区进行渲染操作<br>应当尽量避免的则是GPU离屏渲染</p>
+<p>GPU离屏渲染何时会触发呢？<br>圆角（当和maskToBounds一起使用时）、图层蒙版、阴影，设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer.shouldRasterize ＝ YES</span><br></pre></td></tr></table></figure>
+
+<p><em>为什么要避免GPU离屏渲染？</em></p>
+<p>GPU需要做额外的渲染操作。通常GPU在做渲染的时候是很快的，但是涉及到offscreen-render的时候情况就可能有些不同，因为需要额外开辟一个新的缓冲区进行渲染，然后绘制到当前屏幕的过程需要做onscreen跟offscreen上下文之间的切换，这个过程的消耗会比较昂贵，涉及到OpenGL的pipeline跟barrier，而且offscreen-render在每一帧都会涉及到，因此处理不当肯定会对性能产生一定的影响。另外由于离屏渲染会增加GPU的工作量，可能会导致CPU+GPU的处理时间超出16.7ms，导致掉帧卡顿。所以可以的话应尽量减少offscreen-render的图层</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/" data-id="cktauybbx0040vgucau39gin2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UI/" rel="tag">UI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          iOS开发中使用Block总结
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">iOS开发中RunTime总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/Nacos/">Nacos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/mysql/">mysql</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/">JAVA</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/JVM/">JVM</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/docker/redis/">redis</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/flutter/">flutter</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Objective-C/">Objective-C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Xcode/">Xcode</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vue/">vue</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BUG/" rel="tag">BUG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/" rel="tag">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Objective-C/" rel="tag">Objective-C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunTime/" rel="tag">RunTime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swift/" rel="tag">Swift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI/" rel="tag">UI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hook/" rel="tag">hook</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" rel="tag">iOS真机运行</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysl/" rel="tag">mysl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/volatile/" rel="tag">volatile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" rel="tag">学习计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%83%A8%E7%BD%B2/" rel="tag">部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BUG/" style="font-size: 10px;">BUG</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Objective-C/" style="font-size: 16.67px;">Objective-C</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/UI/" style="font-size: 13.33px;">UI</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/flutter/" style="font-size: 13.33px;">flutter</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hook/" style="font-size: 10px;">hook</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 10px;">iOS真机运行</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mysl/" style="font-size: 10px;">mysl</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/volatile/" style="font-size: 10px;">volatile</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 10px;">优化</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">多线程</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 10px;">学习计划</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">并发编程</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 10px;">部署</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/">JVM 逃逸分析优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/">Nacos通过Docke部署</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85redis/">Docker安装redis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85mysql5-7/">Docker安装mysql5.7</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/30/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-volatile%E5%85%B3%E9%94%AE%E5%AD%97%E7%90%86%E8%A7%A3/">Java并发编程-volatile关键字理解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 jmme@foxmail.com<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

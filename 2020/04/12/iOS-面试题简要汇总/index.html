@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>iOS 面试题简要汇总 | 山芋头</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="常见面试题的概要汇总代理为什么要用weak, delegate 和 DataSource 区别，block和delegate区别？ 防止循环引用； delegate主要是操作,dataSource主要是提供数据; block方便引用上下文，代码更容易理解，轻量级，容易造成循环引用；delegate架构设计更清晰，用weak修饰不容易造成循环引用，没有block轻量级；  属性的实质是什么？包括哪几">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 面试题简要汇总">
+<meta property="og:url" content="https://shanyutou.github.io/2020/04/12/iOS-%E9%9D%A2%E8%AF%95%E9%A2%98%E7%AE%80%E8%A6%81%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="山芋头">
+<meta property="og:description" content="常见面试题的概要汇总代理为什么要用weak, delegate 和 DataSource 区别，block和delegate区别？ 防止循环引用； delegate主要是操作,dataSource主要是提供数据; block方便引用上下文，代码更容易理解，轻量级，容易造成循环引用；delegate架构设计更清晰，用weak修饰不容易造成循环引用，没有block轻量级；  属性的实质是什么？包括哪几">
+<meta property="og:locale" content="cn">
+<meta property="article:published_time" content="2020-04-12T02:13:58.000Z">
+<meta property="article:modified_time" content="2020-07-28T05:41:08.584Z">
+<meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="山芋头" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">山芋头</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">记录和分享能创造价值</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://shanyutou.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS-面试题简要汇总" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/12/iOS-%E9%9D%A2%E8%AF%95%E9%A2%98%E7%AE%80%E8%A6%81%E6%B1%87%E6%80%BB/" class="article-date">
+  <time datetime="2020-04-12T02:13:58.000Z" itemprop="datePublished">2020-04-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS 面试题简要汇总
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="常见面试题的概要汇总"><a href="#常见面试题的概要汇总" class="headerlink" title="常见面试题的概要汇总"></a>常见面试题的概要汇总</h2><h3 id="代理为什么要用weak-delegate-和-DataSource-区别，block和delegate区别？"><a href="#代理为什么要用weak-delegate-和-DataSource-区别，block和delegate区别？" class="headerlink" title="代理为什么要用weak, delegate 和 DataSource 区别，block和delegate区别？"></a>代理为什么要用weak, delegate 和 DataSource 区别，block和delegate区别？</h3><ul>
+<li>防止循环引用；</li>
+<li>delegate主要是操作,dataSource主要是提供数据;</li>
+<li>block方便引用上下文，代码更容易理解，轻量级，容易造成循环引用；delegate架构设计更清晰，用weak修饰不容易造成循环引用，没有block轻量级；</li>
+</ul>
+<h3 id="属性的实质是什么？包括哪几个部分？属性默认的关键字都有哪些？-dynamic关键字和-synthesize关键字是用来做什么的？"><a href="#属性的实质是什么？包括哪几个部分？属性默认的关键字都有哪些？-dynamic关键字和-synthesize关键字是用来做什么的？" class="headerlink" title="属性的实质是什么？包括哪几个部分？属性默认的关键字都有哪些？@dynamic关键字和@synthesize关键字是用来做什么的？"></a>属性的实质是什么？包括哪几个部分？属性默认的关键字都有哪些？@dynamic关键字和@synthesize关键字是用来做什么的？</h3><ul>
+<li>属性本质是@property = ivar + get + set,即会自动生成get/set方法；</li>
+<li>默认关键字有atomic\nonatomic@synthesize@dynamic\getter=getterName\setter=setterName\readwrite\readonly\assign\retian\copy\strong\weak等;</li>
+<li>@dynamic,动态实现属性访问方法，需要再NSObject中实现 <code>+(BOOL)resolveInstanceMethod(SEL) sel</code> 方法中指定动态实现的函数或者方法，或者手动实现方法；</li>
+<li>@Synthesize 自动实现get、set方法；</li>
+</ul>
+<h3 id="NSString为什么要用copy，如果用strong会有什么问题？"><a href="#NSString为什么要用copy，如果用strong会有什么问题？" class="headerlink" title="NSString为什么要用copy，如果用strong会有什么问题？"></a>NSString为什么要用copy，如果用strong会有什么问题？</h3><ul>
+<li>NSString指向NSMUtableString时，如果用copy，则是深copy，strong 则是指向同一个对象，有可变的隐患；</li>
+<li>不可变字符串则是一样效果；copy在这种情况下是浅copy；</li>
+</ul>
+<h3 id="copy、mutablecopy什么时候是深copy、浅copy，可变对象copy后有什么影响？"><a href="#copy、mutablecopy什么时候是深copy、浅copy，可变对象copy后有什么影响？" class="headerlink" title="copy、mutablecopy什么时候是深copy、浅copy，可变对象copy后有什么影响？"></a>copy、mutablecopy什么时候是深copy、浅copy，可变对象copy后有什么影响？</h3><ul>
+<li>copy不可变对象浅copy，引用计数+1，copy可变对象深copy；</li>
+<li>mutablecopy全部是深copy；</li>
+<li>mutable对象copy后变不可变对象,所以NSMutableString不可用copy修饰；</li>
+<li>不可变对象mutablecopy后变为可变对象；</li>
+<li>对数组深copy，数组中的对应依然是浅copy;可通过<code>initWithArray:copyItems:</code>或者归档解档实现(对多层嵌套依然有效)；</li>
+</ul>
+<h3 id="自定义对象如果实现copy、mutablecopy？"><a href="#自定义对象如果实现copy、mutablecopy？" class="headerlink" title="自定义对象如果实现copy、mutablecopy？"></a>自定义对象如果实现copy、mutablecopy？</h3><ul>
+<li>实现nscopying和NSMutableCopying协议；</li>
+</ul>
+<h3 id="IBOutLet修饰的UIView也适用weak；"><a href="#IBOutLet修饰的UIView也适用weak；" class="headerlink" title="IBOutLet修饰的UIView也适用weak；"></a>IBOutLet修饰的UIView也适用weak；</h3><ul>
+<li>因为视图view已经对子视图有强引用了；</li>
+</ul>
+<h3 id="nonatomic-atomic区别；atomic是绝对的线程安全吗，如果不是如何实现；"><a href="#nonatomic-atomic区别；atomic是绝对的线程安全吗，如果不是如何实现；" class="headerlink" title="nonatomic atomic区别；atomic是绝对的线程安全吗，如果不是如何实现；"></a>nonatomic atomic区别；atomic是绝对的线程安全吗，如果不是如何实现；</h3><ul>
+<li>atomic 保障了get、set方法的完整性；</li>
+<li>atomic 不是绝对的线程安全，set同时其他线程可以get；如果要线程安全可以使用线程锁；</li>
+</ul>
+<h3 id="UICollectionView如何实现自定义？"><a href="#UICollectionView如何实现自定义？" class="headerlink" title="UICollectionView如何实现自定义？"></a>UICollectionView如何实现自定义？</h3><ul>
+<li>UICollectionViewLayoutAttributes,UICollectionFlowLayout;</li>
+</ul>
+<h3 id="StoryBoard开发界面有什么弊端，如何避免；"><a href="#StoryBoard开发界面有什么弊端，如何避免；" class="headerlink" title="StoryBoard开发界面有什么弊端，如何避免；"></a>StoryBoard开发界面有什么弊端，如何避免；</h3><ul>
+<li>难以维护，比如全局改动一个字体；</li>
+<li>storyBoard过大的话，加载速度慢；</li>
+<li>遇到错误，提示不明显；</li>
+<li>动态修改属性通过代码实现；</li>
+<li>部分可以独立的view 可使用xib；</li>
+</ul>
+<h3 id="进程与线程、同步与异步、并行与并发还有穿行；"><a href="#进程与线程、同步与异步、并行与并发还有穿行；" class="headerlink" title="进程与线程、同步与异步、并行与并发还有穿行；"></a>进程与线程、同步与异步、并行与并发还有穿行；</h3><ul>
+<li>进程是系统内的一个运行的程序，比如一个运行的exe就是一个进程；线程是进程中的一个执行流程；</li>
+<li>同步是顺序执行，执行完成一个在执行下个任务，需要等待，派发任务时需要任务执行完；</li>
+<li>异步是彼此任务独立，在等待某事件的过程中继续做自己的事，不需要等待这些事件完成后再工作，派发任务不会立即执行；</li>
+<li>并发是一个cpu多个任务复用，轮番执行任务，多个任务共享，提高效率；</li>
+<li>并行是多个cpu同时处理多个任务；</li>
+<li>穿行就是任务顺序执行；</li>
+</ul>
+<h2 id="线程间通信；"><a href="#线程间通信；" class="headerlink" title="线程间通信；"></a>线程间通信；</h2><ul>
+<li>NSThread</li>
+<li>GCD</li>
+<li>NSOperation</li>
+</ul>
+<h3 id="GCD中常用函数"><a href="#GCD中常用函数" class="headerlink" title="GCD中常用函数"></a>GCD中常用函数</h3><ul>
+<li>延迟派发dispatch_after()</li>
+<li>一次性执行 dispatch_once()</li>
+<li>栅栏函数 dispatch_barrier_async/dispatch_barrier_sync</li>
+<li>队列组 dispatch_group</li>
+<li>GCD 定时器 并且更加精确</li>
+</ul>
+<h3 id="如何使用队列来避免资源抢夺？"><a href="#如何使用队列来避免资源抢夺？" class="headerlink" title="如何使用队列来避免资源抢夺？"></a>如何使用队列来避免资源抢夺？</h3><ul>
+<li>dispatch_barrier_async,等前面队列完成后再进行操作；</li>
+</ul>
+<h3 id="数据持久化方案"><a href="#数据持久化方案" class="headerlink" title="数据持久化方案"></a>数据持久化方案</h3><ul>
+<li>coreData realm fmdb</li>
+</ul>
+<h3 id="Appdelegate-方法，第一次启动调用方法，从前台到后台调用方法；"><a href="#Appdelegate-方法，第一次启动调用方法，从前台到后台调用方法；" class="headerlink" title="Appdelegate 方法，第一次启动调用方法，从前台到后台调用方法；"></a>Appdelegate 方法，第一次启动调用方法，从前台到后台调用方法；</h3><ul>
+<li>第一次调用的方法是</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>前台到后台调用方法</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)applicationWillResignActive:(UIApplication *)application <span class="comment">//将要进入后台</span></span><br><span class="line">- (<span class="keyword">void</span>)applicationDidEnterBackground:(UIApplication *)application<span class="comment">//已经进入后台</span></span><br><span class="line">- (<span class="keyword">void</span>)applicationWillEnterForeground:(UIApplication *)application<span class="comment">//将要进入前台</span></span><br><span class="line"> - (<span class="keyword">void</span>)applicationDidBecomeActive:(UIApplication *)application<span class="comment">//已经进入前台</span></span><br><span class="line"> - (<span class="keyword">void</span>)applicationWillTerminate:(UIApplication *)application<span class="comment">//程序结束</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="NSCache哪些地方优与NSDictionary"><a href="#NSCache哪些地方优与NSDictionary" class="headerlink" title="NSCache哪些地方优与NSDictionary"></a>NSCache哪些地方优与NSDictionary</h3><ul>
+<li>都是类似的key-value存储，不同的是nscache的key不用实现copying协议，value也不用实现coding协议；</li>
+</ul>
+<h3 id="知不知道Designated-Initializer（指定初始化函数）？使用它的时候有什么需要注意的问题？"><a href="#知不知道Designated-Initializer（指定初始化函数）？使用它的时候有什么需要注意的问题？" class="headerlink" title="知不知道Designated Initializer（指定初始化函数）？使用它的时候有什么需要注意的问题？"></a>知不知道Designated Initializer（指定初始化函数）？使用它的时候有什么需要注意的问题？</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil NS_DESIGNATED_INITIALIZER;</span><br><span class="line">- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;</span><br></pre></td></tr></table></figure>
+
+<h3 id="description"><a href="#description" class="headerlink" title="description"></a>description</h3><ul>
+<li>nslog</li>
+<li>默认是NSObject的实现，内存地址，类名等；</li>
+<li>可以覆盖后输出关键信息，方便调试；</li>
+</ul>
+<h3 id="OC使用哪种机制管理内存"><a href="#OC使用哪种机制管理内存" class="headerlink" title="OC使用哪种机制管理内存"></a>OC使用哪种机制管理内存</h3><ul>
+<li>returnCount机制，每次runloop的时候都要检查对象的returnCount是否小于等于0，则释放；</li>
+<li>对比java的引用机制，通过内存回收机制遍历不可达的回收；</li>
+<li>引用计数效率更高，但是容易出现循环引用；</li>
+</ul>
+<h3 id="block实质，几种block"><a href="#block实质，几种block" class="headerlink" title="block实质，几种block"></a>block实质，几种block</h3><ul>
+<li>block 结构体，有isa指针指向自己的类（global malloc stack），desc结构体描述bock，_frowording指向自己活着堆上自己的地址，截取上下文的变量，函数指针指向block代码块</li>
+<li>block 编译的时候会生成一个函数，第一参数是block结构体指针，执行block相当于执行block里面_frowding里面的函数</li>
+</ul>
+<h3 id="static-inline-是什么？"><a href="#static-inline-是什么？" class="headerlink" title="static inline 是什么？"></a>static inline 是什么？</h3><ul>
+<li>tatic inline内联函数：使用它可以减少函数运行时间，提高程序运行速度。但内联函数里不能写循环，开关语句，而且最好不写过于冗长的函数。</li>
+</ul>
+<h3 id="属性的默认关键字是什么？"><a href="#属性的默认关键字是什么？" class="headerlink" title="属性的默认关键字是什么？"></a>属性的默认关键字是什么？</h3><ul>
+<li>在声明property时，如果不指定关键字，编译器会为property生成默认的关键字。</li>
+<li>对应基本数据类型，默认关键字为atomic，assign，readwrite。</li>
+<li>对应对象类型，默认关键字为atomic，strong，readwrite。</li>
+</ul>
+<h3 id="为什么在默认情况下无法修改被block捕获的变量？-block都做了什么？"><a href="#为什么在默认情况下无法修改被block捕获的变量？-block都做了什么？" class="headerlink" title="为什么在默认情况下无法修改被block捕获的变量？__block都做了什么？"></a>为什么在默认情况下无法修改被block捕获的变量？__block都做了什么？</h3><ul>
+<li>在block中访问的外部变量是复制过去的，写操作不对原变量生效。</li>
+</ul>
+<h3 id="模拟一下循环引用的一个情况？block实现界面反向传值该怎么做？"><a href="#模拟一下循环引用的一个情况？block实现界面反向传值该怎么做？" class="headerlink" title="模拟一下循环引用的一个情况？block实现界面反向传值该怎么做？"></a>模拟一下循环引用的一个情况？block实现界面反向传值该怎么做？</h3><ul>
+<li>两个.h文件互相import了对方造成循环引用。</li>
+<li>B反向往A传值，首先在A中声明Block</li>
+<li>在B中添加属性，@property (nonatomic,copy) MyBlock block;</li>
+<li>在准备接收值的A控制器里实现block，B.block = ^void(NSString *name){_label.text = name;};</li>
+<li>谁要传值就在B那里调用self.block(var);。</li>
+</ul>
+<h3 id="iOS事件传递响应链是什么？"><a href="#iOS事件传递响应链是什么？" class="headerlink" title="iOS事件传递响应链是什么？"></a>iOS事件传递响应链是什么？</h3><p>在我们点击屏幕的时候，iphone OS获取到了用户进行了“单击”这一行为，操作系统把包含这些点击事件的信息包装成UITouch和UIEvent形式的实例，然后找到当前运行的程序，逐级寻找能够响应这个事件的对象，直到没有响应者响应。这一寻找的过程，被称作事件的响应链。不同的响应者以链式方式寻找，AppDelegate-&gt;UIApplication-&gt;UIWindow-&gt;UIViewController-&gt;UIView-&gt;UIButton</p>
+<h3 id="利用kvo数据绑定，在mvvm模式中，数据绑定被用的很广泛，能够动态的根据数据改变刷新UI。"><a href="#利用kvo数据绑定，在mvvm模式中，数据绑定被用的很广泛，能够动态的根据数据改变刷新UI。" class="headerlink" title="利用kvo数据绑定，在mvvm模式中，数据绑定被用的很广泛，能够动态的根据数据改变刷新UI。"></a>利用kvo数据绑定，在mvvm模式中，数据绑定被用的很广泛，能够动态的根据数据改变刷新UI。</h3><h3 id="多线程锁"><a href="#多线程锁" class="headerlink" title="多线程锁"></a>多线程锁</h3><h3 id="strong-weak-assign-的区别"><a href="#strong-weak-assign-的区别" class="headerlink" title="strong weak assign 的区别"></a>strong weak assign 的区别</h3><h3 id="类和结构体的区别"><a href="#类和结构体的区别" class="headerlink" title="类和结构体的区别"></a>类和结构体的区别</h3><h3 id="多线程锁-1"><a href="#多线程锁-1" class="headerlink" title="多线程锁"></a>多线程锁</h3><h3 id="strong-weak-assign-区别"><a href="#strong-weak-assign-区别" class="headerlink" title="strong weak assign 区别"></a>strong weak assign 区别</h3><h3 id="oc-和-swift-混编"><a href="#oc-和-swift-混编" class="headerlink" title="oc 和 swift 混编"></a>oc 和 swift 混编</h3><h3 id="mrc-和-arc-混编"><a href="#mrc-和-arc-混编" class="headerlink" title="mrc 和 arc 混编"></a>mrc 和 arc 混编</h3><h3 id="http-和-tcp-区别"><a href="#http-和-tcp-区别" class="headerlink" title="http 和 tcp 区别"></a>http 和 tcp 区别</h3><h3 id="进程间的通信方式有哪些"><a href="#进程间的通信方式有哪些" class="headerlink" title="进程间的通信方式有哪些"></a>进程间的通信方式有哪些</h3><ol>
+<li>URL Scheme</li>
+<li>Keychain</li>
+<li>UIPasteboard</li>
+<li>UIDocumentInteractionController</li>
+<li>Local socket</li>
+<li>AirDrop</li>
+<li>UIActivityViewController</li>
+<li>App Groups</li>
+</ol>
+<h3 id="oc-对象-是结构体还是联合体"><a href="#oc-对象-是结构体还是联合体" class="headerlink" title="oc 对象 是结构体还是联合体"></a>oc 对象 是结构体还是联合体</h3><h3 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h3><ul>
+<li>不同对象以自己的方式响应相同的消息的能力叫做多态。</li>
+<li>OC中通过继承、select名字、参数等可实现；</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://shanyutou.github.io/2020/04/12/iOS-%E9%9D%A2%E8%AF%95%E9%A2%98%E7%AE%80%E8%A6%81%E6%B1%87%E6%80%BB/" data-id="cktauybbd0021vgucgv0ddujh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/14/npm-ERR-code-EINTEGRITY/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          npm ERR! code EINTEGRITY
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/08/flutter-0%E5%9F%BA%E7%A1%80%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">flutter 0基础快速学习路线</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/Nacos/">Nacos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/mysql/">mysql</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/">JAVA</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA/JVM/">JVM</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/docker/redis/">redis</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/flutter/">flutter</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Objective-C/">Objective-C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/Xcode/">Xcode</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vue/">vue</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BUG/" rel="tag">BUG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/" rel="tag">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Objective-C/" rel="tag">Objective-C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunTime/" rel="tag">RunTime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swift/" rel="tag">Swift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI/" rel="tag">UI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hook/" rel="tag">hook</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" rel="tag">iOS真机运行</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysl/" rel="tag">mysl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/volatile/" rel="tag">volatile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96/" rel="tag">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" rel="tag">学习计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%83%A8%E7%BD%B2/" rel="tag">部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BUG/" style="font-size: 10px;">BUG</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Objective-C/" style="font-size: 16.67px;">Objective-C</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/UI/" style="font-size: 13.33px;">UI</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/flutter/" style="font-size: 13.33px;">flutter</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hook/" style="font-size: 10px;">hook</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C/" style="font-size: 10px;">iOS真机运行</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mysl/" style="font-size: 10px;">mysl</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/volatile/" style="font-size: 10px;">volatile</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 10px;">优化</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">多线程</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" style="font-size: 10px;">学习计划</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">并发编程</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 10px;">部署</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/">JVM 逃逸分析优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/">Nacos通过Docke部署</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85redis/">Docker安装redis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/01/Docker%E5%AE%89%E8%A3%85mysql5-7/">Docker安装mysql5.7</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/30/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-volatile%E5%85%B3%E9%94%AE%E5%AD%97%E7%90%86%E8%A7%A3/">Java并发编程-volatile关键字理解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 jmme@foxmail.com<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
