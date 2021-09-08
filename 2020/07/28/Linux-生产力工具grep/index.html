@@ -6,17 +6,23 @@
   <meta name="keywords" content="">
   <meta name="description" content="Linux 生产力工具grep | 山芋头">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="记录和总结让知识得到积累，分享能创造价值">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="https://bianchengme.gitee.io/bianchengme/categories/index.html">
+<meta name="description" content="“Java 中的对象是否都分配在堆内存中？”——“不尽然”  Java 中对象的创建一般会由堆内存去分配内存空间来进行存储，在堆内存空间不足的时候，GC 便会对堆内存进行垃圾回收，如果 GC 运行的次数过多，便会影响程序的性能,并且堆内存为所有线程共享，存再同步问题；所以 “逃逸分析” 由此诞生，它的目的就是判断哪些对象是可以存储在栈内存中而不用存储在堆内存中的，从而让其随着线程的消逝而消逝，进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM 逃逸分析优化">
+<meta property="og:url" content="https://shanyutou.github.io/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="山芋头">
-<meta property="og:description" content="记录和总结让知识得到积累，分享能创造价值">
+<meta property="og:description" content="“Java 中的对象是否都分配在堆内存中？”——“不尽然”  Java 中对象的创建一般会由堆内存去分配内存空间来进行存储，在堆内存空间不足的时候，GC 便会对堆内存进行垃圾回收，如果 GC 运行的次数过多，便会影响程序的性能,并且堆内存为所有线程共享，存再同步问题；所以 “逃逸分析” 由此诞生，它的目的就是判断哪些对象是可以存储在栈内存中而不用存储在堆内存中的，从而让其随着线程的消逝而消逝，进">
 <meta property="og:locale" content="cn">
-<meta property="article:published_time" content="2020-03-31T09:16:22.000Z">
-<meta property="article:modified_time" content="2020-07-28T05:41:08.635Z">
+<meta property="og:image" content="e:%5Chexo%5Chexo_boke%5Csource_posts%5CJVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96%5C01.png">
+<meta property="og:image" content="e:%5Chexo%5Chexo_boke%5Csource_posts%5CJVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96%5C02.png">
+<meta property="article:published_time" content="2021-09-07T02:52:06.000Z">
+<meta property="article:modified_time" content="2021-09-07T09:26:03.698Z">
 <meta property="article:author" content="jmme@foxmail.com">
+<meta property="article:tag" content="JAVA">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="优化">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="e:%5Chexo%5Chexo_boke%5Csource_posts%5CJVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96%5C01.png">
 
 
 <link rel="icon" href="/img/avatar.jpg">
@@ -43,7 +49,7 @@
 
 <script src="/js/iconfont.js?v=1.1.0" ></script>
 
-<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/bianchengme/atom.xml" title="山芋头" type="application/atom+xml">
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="山芋头" type="application/atom+xml">
 </head>
 <div style="display: none">
   <input class="theme_disqus_on" value="false">
@@ -243,10 +249,41 @@
     <li>
         <div class="all active" data-rel="All">All
             
-                <small>(52)</small>
+                <small>(55)</small>
             
         </div>
     </li>
+    
+        
+            
+                <li>
+                    <div data-rel="docker">
+                        <i class="fold iconfont icon-right"></i>
+                        
+                        docker
+                        <small>(1)</small>
+                        
+                    </div>
+                    
+                        <ul class="sub hide">
+                            
+                                <li>
+                                    <div data-rel="docker<--->redis">
+                                        
+                                        redis
+                                        
+                                            <small>(1
+                                                )</small>
+                                        
+                                    </div>
+                                    
+                                </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+        
     
         
             
@@ -255,11 +292,23 @@
                         <i class="fold iconfont icon-right"></i>
                         
                         Docker
-                        <small>(1)</small>
+                        <small>(2)</small>
                         
                     </div>
                     
                         <ul class="sub hide">
+                            
+                                <li>
+                                    <div data-rel="Docker<--->mysql">
+                                        
+                                        mysql
+                                        
+                                            <small>(1
+                                                )</small>
+                                        
+                                    </div>
+                                    
+                                </li>
                             
                                 <li>
                                     <div data-rel="Docker<--->Nacos">
@@ -354,11 +403,28 @@
             
                 <li>
                     <div data-rel="java">
+                        <i class="fold iconfont icon-right"></i>
                         
                         java
-                        <small>(2)</small>
+                        <small>(3)</small>
                         
                     </div>
+                    
+                        <ul class="sub hide">
+                            
+                                <li>
+                                    <div data-rel="java<--->多线程">
+                                        
+                                        多线程
+                                        
+                                            <small>(1
+                                                )</small>
+                                        
+                                    </div>
+                                    
+                                </li>
+                            
+                        </ul>
                     
                 </li>
             
@@ -437,6 +503,14 @@
     
         
             
+        
+    
+        
+            
+        
+    
+        
+            
                 <li>
                     <div data-rel="vue">
                         
@@ -467,6 +541,10 @@
             
         
     
+        
+            
+        
+    
 </ul>
 <div class="left-bottom">
     <div class="menus">
@@ -487,7 +565,7 @@
         
     </div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="52">
+<input type="hidden" id="yelog_site_posts_number" value="55">
 
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
@@ -538,6 +616,10 @@
             </li>
         
             <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>docker</a>
+            </li>
+        
+            <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>Docker</a>
             </li>
         
@@ -578,6 +660,10 @@
             </li>
         
             <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>mysl</a>
+            </li>
+        
+            <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>mysql</a>
             </li>
         
@@ -590,6 +676,10 @@
             </li>
         
             <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>redis</a>
+            </li>
+        
+            <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>RunTime</a>
             </li>
         
@@ -599,6 +689,10 @@
         
             <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>UI</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>volatile</a>
             </li>
         
             <li class="article-tag-list-item">
@@ -630,6 +724,10 @@
             </li>
         
             <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>并发编程</a>
+            </li>
+        
+            <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>算法</a>
             </li>
         
@@ -653,7 +751,7 @@
     <nav id="title-list-nav">
         
         <a  class="All JAVA JVM "
-           href="/bianchengme/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/"
+           href="/2021/09/07/JVM-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90%E4%BC%98%E5%8C%96/"
            data-tag="JAVA,JVM,优化"
            data-author="" >
             <span class="post-title" title="JVM 逃逸分析优化">JVM 逃逸分析优化</span>
@@ -661,15 +759,39 @@
         </a>
         
         <a  class="All Docker Nacos "
-           href="/bianchengme/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/"
+           href="/2021/07/02/Nacos%E9%80%9A%E8%BF%87Docke%E9%83%A8%E7%BD%B2/"
            data-tag="Docker,nacos,部署"
            data-author="" >
             <span class="post-title" title="Nacos通过Docke部署">Nacos通过Docke部署</span>
             <span class="post-date" title="2021-07-02 09:28:53">2021/07/02</span>
         </a>
         
+        <a  class="All docker redis "
+           href="/2021/07/01/Docker%E5%AE%89%E8%A3%85redis/"
+           data-tag="docker,redis"
+           data-author="" >
+            <span class="post-title" title="Docker安装redis">Docker安装redis</span>
+            <span class="post-date" title="2021-07-01 14:22:32">2021/07/01</span>
+        </a>
+        
+        <a  class="All Docker mysql "
+           href="/2021/07/01/Docker%E5%AE%89%E8%A3%85mysql5-7/"
+           data-tag="docker,mysl"
+           data-author="" >
+            <span class="post-title" title="Docker安装mysql5.7">Docker安装mysql5.7</span>
+            <span class="post-date" title="2021-07-01 14:22:32">2021/07/01</span>
+        </a>
+        
+        <a  class="All java 多线程 "
+           href="/2021/06/30/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-volatile%E5%85%B3%E9%94%AE%E5%AD%97%E7%90%86%E8%A7%A3/"
+           data-tag="java,并发编程,volatile"
+           data-author="" >
+            <span class="post-title" title="Java并发编程-volatile关键字理解">Java并发编程-volatile关键字理解</span>
+            <span class="post-date" title="2021-06-30 14:17:17">2021/06/30</span>
+        </a>
+        
         <a  class="All mysql "
-           href="/bianchengme/2021/05/09/centos7-%E5%AE%89%E8%A3%85mysql5-7/"
+           href="/2021/05/09/centos7-%E5%AE%89%E8%A3%85mysql5-7/"
            data-tag="mysql"
            data-author="" >
             <span class="post-title" title="centos7 安装mysql5.7">centos7 安装mysql5.7</span>
@@ -677,7 +799,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2021/03/12/openstack-horizon-%E5%BF%AB%E9%80%9F%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C/"
+           href="/2021/03/12/openstack-horizon-%E5%BF%AB%E9%80%9F%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="openstack-horizon 快速本地运行">openstack-horizon 快速本地运行</span>
@@ -685,7 +807,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/10/11/%E7%94%A8npm%E5%AE%89%E8%A3%85sass%E6%95%99%E7%A8%8B%E5%92%8C%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF/"
+           href="/2020/10/11/%E7%94%A8npm%E5%AE%89%E8%A3%85sass%E6%95%99%E7%A8%8B%E5%92%8C%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="用npm安装sass教程和常见错误">用npm安装sass教程和常见错误</span>
@@ -693,7 +815,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/10/11/%E9%A1%B9%E7%9B%AE%E5%9F%BA%E7%BA%BF%E7%9B%AE%E5%BD%95-%E6%96%B9%E4%BE%BF%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E4%BA%A4%E6%8E%A5/"
+           href="/2020/10/11/%E9%A1%B9%E7%9B%AE%E5%9F%BA%E7%BA%BF%E7%9B%AE%E5%BD%95-%E6%96%B9%E4%BE%BF%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E4%BA%A4%E6%8E%A5/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="项目基线目录-方便项目管理与交接">项目基线目录-方便项目管理与交接</span>
@@ -701,7 +823,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/09/09/Spring-boot-api-%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7-apiDoc-vs-swagger-and-JApiDocs/"
+           href="/2020/09/09/Spring-boot-api-%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7-apiDoc-vs-swagger-and-JApiDocs/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Spring boot api 生成工具 apiDoc vs swagger and JApiDocs">Spring boot api 生成工具 apiDoc vs swagger and JApiDocs</span>
@@ -709,7 +831,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/08/09/Java-enum%E5%B8%B8%E8%A7%81%E7%9A%84%E7%94%A8%E6%B3%95/"
+           href="/2020/08/09/Java-enum%E5%B8%B8%E8%A7%81%E7%9A%84%E7%94%A8%E6%B3%95/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Java enum常见的用法">Java enum常见的用法</span>
@@ -717,7 +839,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/08/08/Autowired%E4%B8%8E-Resource%E7%9A%84%E5%8C%BA%E5%88%AB/"
+           href="/2020/08/08/Autowired%E4%B8%8E-Resource%E7%9A%84%E5%8C%BA%E5%88%AB/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="@Autowired与@Resource的区别">@Autowired与@Resource的区别</span>
@@ -725,7 +847,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/08/07/SOAP-%E5%8D%8F%E8%AE%AE%E8%AF%B7%E6%B1%82%E5%92%8C%E8%B0%83%E8%AF%95/"
+           href="/2020/08/07/SOAP-%E5%8D%8F%E8%AE%AE%E8%AF%B7%E6%B1%82%E5%92%8C%E8%B0%83%E8%AF%95/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="SOAP 协议请求和调试">SOAP 协议请求和调试</span>
@@ -733,7 +855,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/08/07/Maven-%E5%88%86%E6%9E%90%E9%A1%B9%E7%9B%AE%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/"
+           href="/2020/08/07/Maven-%E5%88%86%E6%9E%90%E9%A1%B9%E7%9B%AE%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Maven 分析项目依赖关系">Maven 分析项目依赖关系</span>
@@ -741,7 +863,7 @@
         </a>
         
         <a  class="All java "
-           href="/bianchengme/2020/08/02/Java-lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0/"
+           href="/2020/08/02/Java-lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0/"
            data-tag="java"
            data-author="" >
             <span class="post-title" title="Java lambda表达式-箭头函数">Java lambda表达式-箭头函数</span>
@@ -749,7 +871,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/30/Spring-boot%E7%9A%84%E4%BC%98%E7%82%B9/"
+           href="/2020/07/30/Spring-boot%E7%9A%84%E4%BC%98%E7%82%B9/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Spring boot的优点">Spring boot的优点</span>
@@ -757,7 +879,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/28/Linux-%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7grep/"
+           href="/2020/07/28/Linux-%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7grep/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Linux 生产力工具grep">Linux 生产力工具grep</span>
@@ -765,7 +887,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/28/Linux-%E5%88%87%E6%8D%A2%E5%90%AF%E5%8A%A8%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%BA%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%95%8C%E9%9D%A2/"
+           href="/2020/07/28/Linux-%E5%88%87%E6%8D%A2%E5%90%AF%E5%8A%A8%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%BA%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%95%8C%E9%9D%A2/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Linux 切换启动图形界面为命令行界面">Linux 切换启动图形界面为命令行界面</span>
@@ -773,7 +895,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE-1/"
+           href="/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE-1/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Linux 修改网络配置">Linux 修改网络配置</span>
@@ -781,7 +903,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"
+           href="/2020/07/28/Linux-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Linux 修改网络配置">Linux 修改网络配置</span>
@@ -789,7 +911,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/26/JS%E4%B8%AD%E7%9A%84async-await%E7%9A%84%E7%94%A8%E6%B3%95%E5%92%8C%E7%90%86%E8%A7%A3/"
+           href="/2020/07/26/JS%E4%B8%AD%E7%9A%84async-await%E7%9A%84%E7%94%A8%E6%B3%95%E5%92%8C%E7%90%86%E8%A7%A3/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="JS中的async和await的用法和理解">JS中的async和await的用法和理解</span>
@@ -797,7 +919,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/07/26/Vue-%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD/"
+           href="/2020/07/26/Vue-%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Vue 插槽和作用域插槽">Vue 插槽和作用域插槽</span>
@@ -805,7 +927,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/05/19/CALayer/"
+           href="/2020/05/19/CALayer/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="CALayer">CALayer</span>
@@ -813,7 +935,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/05/18/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"
+           href="/2020/05/18/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="vue学习笔记">vue学习笔记</span>
@@ -821,7 +943,7 @@
         </a>
         
         <a  class="All vue "
-           href="/bianchengme/2020/05/18/vue-%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/"
+           href="/2020/05/18/vue-%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/"
            data-tag="vue,学习计划"
            data-author="" >
             <span class="post-title" title="vue 学习计划">vue 学习计划</span>
@@ -829,7 +951,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/05/13/UICollectionView/"
+           href="/2020/05/13/UICollectionView/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="UICollectionView">UICollectionView</span>
@@ -837,7 +959,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/28/%E8%87%AA%E5%AE%9A%E4%B9%89UITabBar%E6%A0%B7%E5%BC%8F/"
+           href="/2020/04/28/%E8%87%AA%E5%AE%9A%E4%B9%89UITabBar%E6%A0%B7%E5%BC%8F/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="自定义UITabBar样式">自定义UITabBar样式</span>
@@ -845,7 +967,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/27/Devops/"
+           href="/2020/04/27/Devops/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Devops">Devops</span>
@@ -853,7 +975,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/25/iOS-Xcode-%E8%A7%A3%E5%86%B3%E2%80%9CCould-not-insert-new-outlet-connection%E2%80%9D%E7%9A%84%E9%97%AE%E9%A2%98/"
+           href="/2020/04/25/iOS-Xcode-%E8%A7%A3%E5%86%B3%E2%80%9CCould-not-insert-new-outlet-connection%E2%80%9D%E7%9A%84%E9%97%AE%E9%A2%98/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="iOS Xcode, 解决“Could not insert new outlet connection”的问题">iOS Xcode, 解决“Could not insert new outlet connection”的问题</span>
@@ -861,7 +983,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2020/04/25/iOS13%E4%BF%AE%E6%94%B9status-bar-%E7%9A%84%E5%AD%97%E4%BD%93%E9%A2%9C%E8%89%B2/"
+           href="/2020/04/25/iOS13%E4%BF%AE%E6%94%B9status-bar-%E7%9A%84%E5%AD%97%E4%BD%93%E9%A2%9C%E8%89%B2/"
            data-tag="iOS"
            data-author="" >
             <span class="post-title" title="iOS13修改status bar 的字体颜色">iOS13修改status bar 的字体颜色</span>
@@ -869,7 +991,7 @@
         </a>
         
         <a  class="All git "
-           href="/bianchengme/2020/04/25/git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           href="/2020/04/25/git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
            data-tag="git"
            data-author="" >
             <span class="post-title" title="git 常用命令">git 常用命令</span>
@@ -877,7 +999,7 @@
         </a>
         
         <a  class="All iOS Xcode "
-           href="/bianchengme/2020/04/24/Cocoapods-CDN-%E9%94%99%E8%AF%AF/"
+           href="/2020/04/24/Cocoapods-CDN-%E9%94%99%E8%AF%AF/"
            data-tag="iOS,Xcode"
            data-author="" >
             <span class="post-title" title="Cocoapods CDN 错误">Cocoapods CDN 错误</span>
@@ -885,7 +1007,7 @@
         </a>
         
         <a  class="All iOS Objective-C "
-           href="/bianchengme/2020/04/24/Objective-C%E4%B9%8BNS-ASSUME-NONNULL-BEGIN-NS-ASSUME-NONNULL-END/"
+           href="/2020/04/24/Objective-C%E4%B9%8BNS-ASSUME-NONNULL-BEGIN-NS-ASSUME-NONNULL-END/"
            data-tag="iOS,Objective-C"
            data-author="" >
             <span class="post-title" title="Objective-C之NS_ASSUME_NONNULL_BEGIN &amp; NS_ASSUME_NONNULL_END">Objective-C之NS_ASSUME_NONNULL_BEGIN &amp; NS_ASSUME_NONNULL_END</span>
@@ -893,7 +1015,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2020/04/19/%E7%94%A8clang%E7%BC%96%E8%AF%91Objective-C%E5%AF%B9%E8%B1%A1%EF%BC%8C%E7%90%86%E8%A7%A3%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9C%BA%E5%88%B6/"
+           href="/2020/04/19/%E7%94%A8clang%E7%BC%96%E8%AF%91Objective-C%E5%AF%B9%E8%B1%A1%EF%BC%8C%E7%90%86%E8%A7%A3%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9C%BA%E5%88%B6/"
            data-tag="iOS,Objective-C"
            data-author="" >
             <span class="post-title" title="用clang编译Objective-C对象，理解运行时机制">用clang编译Objective-C对象，理解运行时机制</span>
@@ -901,7 +1023,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/14/npm-ERR-code-EINTEGRITY/"
+           href="/2020/04/14/npm-ERR-code-EINTEGRITY/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="npm ERR! code EINTEGRITY">npm ERR! code EINTEGRITY</span>
@@ -909,7 +1031,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2020/04/12/iOS-%E9%9D%A2%E8%AF%95%E9%A2%98%E7%AE%80%E8%A6%81%E6%B1%87%E6%80%BB/"
+           href="/2020/04/12/iOS-%E9%9D%A2%E8%AF%95%E9%A2%98%E7%AE%80%E8%A6%81%E6%B1%87%E6%80%BB/"
            data-tag="iOS,面试"
            data-author="" >
             <span class="post-title" title="iOS 面试题简要汇总">iOS 面试题简要汇总</span>
@@ -917,7 +1039,7 @@
         </a>
         
         <a  class="All flutter "
-           href="/bianchengme/2020/04/08/flutter-0%E5%9F%BA%E7%A1%80%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"
+           href="/2020/04/08/flutter-0%E5%9F%BA%E7%A1%80%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"
            data-tag="flutter"
            data-author="" >
             <span class="post-title" title="flutter 0基础快速学习路线">flutter 0基础快速学习路线</span>
@@ -925,7 +1047,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/03/Flutter%E5%88%9D%E7%89%88/"
+           href="/2020/04/03/Flutter%E5%88%9D%E7%89%88/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Flutter初版">Flutter初版</span>
@@ -933,7 +1055,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/04/03/Keyboard-Maestro-Mac-%E9%94%AE%E7%9B%98%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/"
+           href="/2020/04/03/Keyboard-Maestro-Mac-%E9%94%AE%E7%9B%98%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Keyboard Maestro Mac 键盘效率工具">Keyboard Maestro Mac 键盘效率工具</span>
@@ -941,7 +1063,7 @@
         </a>
         
         <a  class="All flutter "
-           href="/bianchengme/2020/04/02/flutter%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E6%B1%87%E6%80%BB/"
+           href="/2020/04/02/flutter%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E6%B1%87%E6%80%BB/"
            data-tag="flutter,BUG,iOS真机运行"
            data-author="" >
             <span class="post-title" title="flutter常见错误汇总">flutter常见错误汇总</span>
@@ -949,7 +1071,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8Bfishhook/"
+           href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8Bfishhook/"
            data-tag="iOS,hook"
            data-author="" >
             <span class="post-title" title="iOS开发之fishhook">iOS开发之fishhook</span>
@@ -957,7 +1079,7 @@
         </a>
         
         <a  class="All "
-           href="/bianchengme/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8BRunloop/"
+           href="/2020/03/31/iOS%E5%BC%80%E5%8F%91%E4%B9%8BRunloop/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="iOS开发之Runloop">iOS开发之Runloop</span>
@@ -965,7 +1087,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2020/03/28/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           href="/2020/03/28/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
            data-tag="iOS,多线程"
            data-author="" >
             <span class="post-title" title="iOS多线程">iOS多线程</span>
@@ -973,7 +1095,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/06/05/iOS%E5%BC%80%E5%8F%91Objective-C%E6%80%BB%E7%BB%93/"
+           href="/2019/06/05/iOS%E5%BC%80%E5%8F%91Objective-C%E6%80%BB%E7%BB%93/"
            data-tag="iOS,Objective-C"
            data-author="" >
             <span class="post-title" title="iOS开发Objective-C总结">iOS开发Objective-C总结</span>
@@ -981,7 +1103,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/05/27/iOS%E5%BC%80%E5%8F%91Swift%E6%80%BB%E7%BB%93/"
+           href="/2019/05/27/iOS%E5%BC%80%E5%8F%91Swift%E6%80%BB%E7%BB%93/"
            data-tag="iOS,Swift"
            data-author="" >
             <span class="post-title" title="iOS开发Swift总结">iOS开发Swift总结</span>
@@ -989,7 +1111,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/"
+           href="/2019/04/06/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Block%E6%80%BB%E7%BB%93/"
            data-tag="iOS"
            data-author="" >
             <span class="post-title" title="iOS开发中使用Block总结">iOS开发中使用Block总结</span>
@@ -997,7 +1119,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/"
+           href="/2019/03/29/iOS%E5%BC%80%E5%8F%91UI%E6%80%BB%E7%BB%93/"
            data-tag="iOS,UI"
            data-author="" >
             <span class="post-title" title="iOS开发UI总结">iOS开发UI总结</span>
@@ -1005,7 +1127,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/"
+           href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%ADRunTime%E6%80%BB%E7%BB%93/"
            data-tag="iOS,RunTime"
            data-author="" >
             <span class="post-title" title="iOS开发中RunTime总结">iOS开发中RunTime总结</span>
@@ -1013,7 +1135,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/"
+           href="/2019/03/29/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%80%BB%E7%BB%93/"
            data-tag="iOS"
            data-author="" >
             <span class="post-title" title="iOS开发中内存管理总结">iOS开发中内存管理总结</span>
@@ -1021,7 +1143,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/15/iOS%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"
+           href="/2019/03/15/iOS%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"
            data-tag="iOS,网络"
            data-author="" >
             <span class="post-title" title="iOS网络编程">iOS网络编程</span>
@@ -1029,7 +1151,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/05/iOS%E5%B8%B8%E8%A7%81%E7%AE%97%E6%B3%95%E6%B1%87%E6%80%BB/"
+           href="/2019/03/05/iOS%E5%B8%B8%E8%A7%81%E7%AE%97%E6%B3%95%E6%B1%87%E6%80%BB/"
            data-tag="iOS,算法"
            data-author="" >
             <span class="post-title" title="iOS常见算法汇总">iOS常见算法汇总</span>
@@ -1037,7 +1159,7 @@
         </a>
         
         <a  class="All iOS "
-           href="/bianchengme/2019/03/01/UI-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%A6%81%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0/"
+           href="/2019/03/01/UI-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%A6%81%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0/"
            data-tag="iOS,UI"
            data-author="" >
             <span class="post-title" title="UI 为什么必须要在主线程更新">UI 为什么必须要在主线程更新</span>
@@ -1045,7 +1167,7 @@
         </a>
         
         <a  class="All Windows "
-           href="/bianchengme/2019/02/26/%E6%8A%8AMac%E4%B8%8A%E5%A5%BD%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E6%90%AC%E5%88%B0Windows/"
+           href="/2019/02/26/%E6%8A%8AMac%E4%B8%8A%E5%A5%BD%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E6%90%AC%E5%88%B0Windows/"
            data-tag="Windows,工具"
            data-author="" >
             <span class="post-title" title="把Mac上好用的操作搬到Windows">把Mac上好用的操作搬到Windows</span>
@@ -1053,7 +1175,7 @@
         </a>
         
         <a  class="All java "
-           href="/bianchengme/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/"
+           href="/2018/10/31/mybatis-plus-xml-%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE/"
            data-tag="java"
            data-author="" >
             <span class="post-title" title="Maven项目资源文件路径配置理解">Maven项目资源文件路径配置理解</span>
@@ -1061,7 +1183,7 @@
         </a>
         
         <a  class="All Markdown "
-           href="/bianchengme/2018/03/30/Markdown%E8%AF%AD%E6%B3%95/"
+           href="/2018/03/30/Markdown%E8%AF%AD%E6%B3%95/"
            data-tag="Markdown"
            data-author="" >
             <span class="post-title" title="Markdown语法">Markdown语法</span>
